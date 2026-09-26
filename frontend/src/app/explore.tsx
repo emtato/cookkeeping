@@ -40,7 +40,7 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.container}>
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
+          <ThemedText style={styles.centerText} themeColour="textSecondary">
             This starter app includes example{'\n'}code to help you get started.
           </ThemedText>
 
@@ -102,8 +102,8 @@ export default function TabTwoScreen() {
           <Collapsible title="Light and dark mode components">
             <ThemedText type="small">
               This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
+              <ThemedText type="code">useColourScheme()</ThemedText> hook lets you inspect what the
+              user&apos;s current colour scheme is, and so you can adjust UI colours accordingly.
             </ThemedText>
             <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
               <ThemedText type="linkPrimary">Learn more</ThemedText>
