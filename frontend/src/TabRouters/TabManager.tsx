@@ -10,7 +10,6 @@ export default function TabManager() {
   return (
     <NativeTabs
       backgroundColor={colours.background}
-      indicatorColor={colours.backgroundElement}
       iconColor={colours.textSecondary}
       labelStyle={{ selected: { color: colours.text } }}>
       <NativeTabs.Trigger name="index">
