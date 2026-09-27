@@ -9,7 +9,7 @@ import {GroceryItem} from "@/types/groceryItem"
 interface GroceryCategoryProps {
     sectionTitle: string,
     sectionItems: GroceryItem[],
-    itemChecked: (item: string) => void
+    itemChecked: (item: GroceryItem) => void
 }
 
 export default function GroceryCategory({sectionTitle, sectionItems, itemChecked}: GroceryCategoryProps) {
@@ -19,12 +19,14 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
         <ThemedText type="subtitle" style={{marginLeft: 5}}>{sectionTitle}</ThemedText>
         {sectionItems.map((item, index) => (
             <View key={`${item}-${index}`} style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-                <Pressable style={{marginLeft: 10}}>
+                <Pressable style={{marginLeft: 10}} onPress={() => itemChecked(item)}>
                     {item.checked &&
-                        <SymbolView name="checkmark.circle.fill" tintColor={colours.greenhighlight}></SymbolView>}
-                    {!item.checked && <SymbolView name="circle" tintColor={colours.greenhighlight}></SymbolView>}
+                        <SymbolView name="checkmark.circle.fill" tintColor={colours.greenhighlight}
+                                    style={{width: 30, height: 30}}></SymbolView>}
+                    {!item.checked && <SymbolView name="circle" style={{width: 30, height: 30}}
+                                                  tintColor={colours.greenhighlight}></SymbolView>}
                 </Pressable>
-                <ThemedText>{item.name}</ThemedText>
+                <ThemedText style={{lineHeight: 35}}>{item.name}</ThemedText>
             </View>
         ))}
     </>

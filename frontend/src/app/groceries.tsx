@@ -20,7 +20,16 @@ export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
     const [GroceryCategories, setGroceryCategories] = useState<string[]>(['eggs', 'emma', 'other food']);//modify with real grocery categories list
-    const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
+    const [items, setGroceryItems] = useState<GroceryItem[]>([
+        {id: '1', name: 'one egg', checked: false, category: 'eggs'},
+        {id: '2', name: 'another egg', checked: false, category: 'eggs'},
+        {id: '3', name: 'one last egg', checked: false, category: 'eggs'},
+        {id: '4', name: 'em', checked: false, category: 'emma'},
+        {id: '5', name: 'ma', checked: false, category: 'emma'},
+        {id: '6', name: 'bagle', checked: false, category: 'other food'},
+        {id: '7', name: 'chip', checked: false, category: 'other food'}
+    ]); //change to actual list from backend later
+
 
     // const safeAreaInsets = useSafeAreaInsets();
     // const insets = {
@@ -43,31 +52,29 @@ export default function TabTwoScreen() {
     // });
 
 
-    //temporary list items
-    const items: GroceryItem[] = [{id: '1', name: 'one egg', checked: false, category: 'eggs'}, {
-        id: '2', name: 'another egg', checked: false, category: 'eggs'
-    }, {id: '3', name: 'one last egg', checked: false, category: 'eggs'}, {
-        id: '1', name: 'em', checked: false, category: 'emma'
-    }, {
-        id: '2', name: 'ma', checked: false, category: 'emma'
-    }, {id: '1', name: 'bagle', checked: false, category: 'other food'}, {
-        id: '2', name: 'chip', checked: false, category: 'other food'
-    }]
+    function groceryItemCheckedeed(item: GroceryItem) {
+        let newList: GroceryItem[] = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].id == item.id) {
+                items[i].checked = !items[i].checked;
+            }
+            newList.push(items[i]);
 
-
-    function groceryItemCheckedeed(item: string) {
-
+        }
+        setGroceryItems(newList);
     }
 
     return <ScrollView style={{backgroundColor: colours.background}}>
 
-        <GroceryCategory sectionTitle={GroceryCategories[0]} sectionItems={items.filter(item => item.category == GroceryCategories[0])}
+        <GroceryCategory sectionTitle={GroceryCategories[0]}
+                         sectionItems={items.filter(item => item.category == GroceryCategories[0])}
                          itemChecked={groceryItemCheckedeed}/>
-        <GroceryCategory sectionTitle={GroceryCategories[1]} sectionItems={items.filter(item => item.category == GroceryCategories[1])}
+        <GroceryCategory sectionTitle={GroceryCategories[1]}
+                         sectionItems={items.filter(item => item.category == GroceryCategories[1])}
                          itemChecked={groceryItemCheckedeed}/>
-        <GroceryCategory sectionTitle={GroceryCategories[2]} sectionItems={items.filter(item => item.category == GroceryCategories[2])}
+        <GroceryCategory sectionTitle={GroceryCategories[2]}
+                         sectionItems={items.filter(item => item.category == GroceryCategories[2])}
                          itemChecked={groceryItemCheckedeed}/>
-
 
 
     </ScrollView>
