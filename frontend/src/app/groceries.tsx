@@ -13,11 +13,14 @@ import {useTheme} from '@/hooks/use-theme';
 import {Colours} from '@/constants/theme'
 import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
+import {GroceryItem} from "@/types/groceryItem";
+import {useState} from "react";
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
-
+    const [GroceryCategories, setGroceryCategories] = useState<string[]>(['eggs', 'emma', 'other food']);//modify with real grocery categories list
+    const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
 
     // const safeAreaInsets = useSafeAreaInsets();
     // const insets = {
@@ -39,11 +42,32 @@ export default function TabTwoScreen() {
     //     },
     // });
 
+
+    //temporary list items
+    const items: GroceryItem[] = [{id: '1', name: 'one egg', checked: false, category: 'eggs'}, {
+        id: '2', name: 'another egg', checked: false, category: 'eggs'
+    }, {id: '3', name: 'one last egg', checked: false, category: 'eggs'}, {
+        id: '1', name: 'em', checked: false, category: 'emma'
+    }, {
+        id: '2', name: 'ma', checked: false, category: 'emma'
+    }, {id: '1', name: 'bagle', checked: false, category: 'other food'}, {
+        id: '2', name: 'chip', checked: false, category: 'other food'
+    }]
+
+
+    function groceryItemCheckedeed(item: string) {
+
+    }
+
     return <ScrollView style={{backgroundColor: colours.background}}>
-        <GroceryCategory sectionTitle={'secion'} sectionItems={['item', 'item']}/>
-        <GroceryCategory sectionTitle={'eggs'} sectionItems={['one egg', 'another egg']}/>
-        <GroceryCategory sectionTitle={'emma'} sectionItems={['em','ma']}/>
-        <GroceryCategory sectionTitle={'other food'} sectionItems={['chip', 'bagle']}/>
+
+        <GroceryCategory sectionTitle={GroceryCategories[0]} sectionItems={items.filter(item => item.category == GroceryCategories[0])}
+                         itemChecked={groceryItemCheckedeed}/>
+        <GroceryCategory sectionTitle={GroceryCategories[1]} sectionItems={items.filter(item => item.category == GroceryCategories[1])}
+                         itemChecked={groceryItemCheckedeed}/>
+        <GroceryCategory sectionTitle={GroceryCategories[2]} sectionItems={items.filter(item => item.category == GroceryCategories[2])}
+                         itemChecked={groceryItemCheckedeed}/>
+
 
 
     </ScrollView>
