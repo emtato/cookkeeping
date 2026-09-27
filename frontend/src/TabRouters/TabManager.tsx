@@ -20,8 +20,22 @@ export default function TabManager() {
                     renderingMode="template"/>
             </NativeTabs.Trigger>
 
-            <NativeTabs.Trigger name="explore">
-                <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger name="groceries">
+                <NativeTabs.Trigger.Label>Groceries</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon
+                    src={require('@/assets/images/tabIcons/explore.png')}
+                    renderingMode="template"/>
+            </NativeTabs.Trigger>
+
+            <NativeTabs.Trigger name="plan">
+                <NativeTabs.Trigger.Label>Plan</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Icon
+                    src={require('@/assets/images/tabIcons/explore.png')}
+                    renderingMode="template"/>
+            </NativeTabs.Trigger>
+
+            <NativeTabs.Trigger name="recipes">
+                <NativeTabs.Trigger.Label>Recipes</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     src={require('@/assets/images/tabIcons/explore.png')}
                     renderingMode="template"/>

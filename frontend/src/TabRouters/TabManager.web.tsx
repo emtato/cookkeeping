@@ -24,7 +24,7 @@ export default function TabManager() {
           <TabTrigger name="home" href="/" asChild>
             <TabButton>Home</TabButton>
           </TabTrigger>
-          <TabTrigger name="explore" href="/explore" asChild>
+          <TabTrigger name="explore" href="/groceries" asChild>
             <TabButton>Explore</TabButton>
           </TabTrigger>
         </CustomTabList>
