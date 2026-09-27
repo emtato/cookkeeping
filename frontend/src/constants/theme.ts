@@ -29,7 +29,7 @@ export const Colours = {
         brownhighlightSecondary: '#8f693e',
     },
     dark: {
-        text: '#130c01',
+        text: '#e8e0db',
         textSecondary: '#e0d3c9',
         background: '#131914',
         greenhighlight: '#6fce6f',
