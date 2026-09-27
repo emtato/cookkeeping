@@ -12,6 +12,7 @@ import {BottomTabInset, MaxContentWidth, Spacing} from '@/constants/theme';
 import {useTheme} from '@/hooks/use-theme';
 import {Colours} from '@/constants/theme'
 import {useColorScheme as useColourScheme} from 'react-native';
+import GroceryCategory from "@/components/grocery-category";
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
@@ -39,10 +40,11 @@ export default function TabTwoScreen() {
     // });
 
     return <ScrollView style={{backgroundColor: colours.background}}>
-    <ThemedText type="subtitle">Explore</ThemedText>
-    <ThemedText style={styles.centerText} themeColour="textSecondary">
-      This starter app includes example{'\n'}code to help you get started.
-    </ThemedText>
+        <GroceryCategory sectionTitle={'secion'} sectionItems={['item', 'item']}/>
+        <GroceryCategory sectionTitle={'eggs'} sectionItems={['one egg', 'another egg']}/>
+        <GroceryCategory sectionTitle={'emma'} sectionItems={['em','ma']}/>
+        <GroceryCategory sectionTitle={'other food'} sectionItems={['chip', 'bagle']}/>
+
 
     </ScrollView>
 
