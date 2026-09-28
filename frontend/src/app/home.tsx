@@ -1,79 +1,66 @@
 import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {Platform, StyleSheet, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import {AnimatedIcon} from '@/components/animated-icon';
+import {HintRow} from '@/components/hint-row';
+import {ThemedText} from '@/components/themed-text';
+import {ThemedView} from '@/components/themed-view';
+import {WebBadge} from '@/components/web-badge';
+import {BottomTabInset, MaxContentWidth, Spacing} from '@/constants/theme';
 
 
 export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;meowy
-          </ThemedText>
-        </ThemedView>
+    const now = new Date();
+    const name = "Emilia" // later connect to logged in state + main stuff
+    const hours = now.getHours();
+    let greeting: string = 'Go to sleep!';
+    if (hours >= 6 && hours < 12) {
+        greeting = 'Good morning';
+    } else if (hours >= 12 && hours < 17) {
+        greeting = 'Good afternoon';
+    } else if (hours >= 17 || hours < 2) {// 5 pm to midnight and midnight to 1:59 am
+        greeting = 'Good evening';
+    }
 
-        <ThemedText type="code" style={styles.code}>
-          get started!!!!!!!!!!!
-        </ThemedText>
+    const formattedDate = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+    });
+    //TODO:  stylw w more fonts
 
-        <ThemedView style={styles.stepContainer}>
-          <HintRow
-            title="Try EEEEEEEEEAMAMA"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+    return (
+        <View style={styles.home_container}>
+            <View style={styles.section_1}>
+                <ThemedText type="title">{greeting}, {name}!</ThemedText>
+                <ThemedText type="subtitle" style={{marginTop: -Spacing.two}}>{formattedDate.toString()}</ThemedText>
+            </View>
+            <View style={styles.section_2}>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
+
+        home_container: {
+            flex: 1,
+            flexDirection: 'column',
+        },
+        section_1: {
+            marginTop: Spacing.twenty,
+            marginLeft: Spacing.two,
+        },
+        section_2: {
+            marginTop: Spacing.twenty,
+            marginLeft: Spacing.two,
+            backgroundColor: '#F2EDE5',
+            width: '100%',
+            height: '20%',
+            borderRadius: 50,
+            padding: 0,
+        }
+    })
+;
