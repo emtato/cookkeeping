@@ -3,4 +3,5 @@ export type GroceryItem = {
     name: string;
     checked: boolean;
     category: string;
+    subtext: string;
 };

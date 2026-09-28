@@ -21,13 +21,13 @@ export default function TabTwoScreen() {
     const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
     const [GroceryCategories, setGroceryCategories] = useState<string[]>(['eggs', 'emma', 'other food']);//modify with real grocery categories list
     const [items, setGroceryItems] = useState<GroceryItem[]>([
-        {id: '1', name: 'one egg', checked: false, category: 'eggs'},
-        {id: '2', name: 'another egg', checked: false, category: 'eggs'},
-        {id: '3', name: 'one last egg', checked: false, category: 'eggs'},
-        {id: '4', name: 'em', checked: false, category: 'emma'},
-        {id: '5', name: 'ma', checked: false, category: 'emma'},
-        {id: '6', name: 'bagle', checked: false, category: 'other food'},
-        {id: '7', name: 'chip', checked: false, category: 'other food'}
+        {id: '1', name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
+        {id: '2', name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
+        {id: '3', name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
+        {id: '4', name: 'em', checked: false, category: 'emma', subtext: 'ss'},
+        {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
+        {id: '6', name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
+        {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}
     ]); //change to actual list from backend later
 
 
@@ -59,12 +59,15 @@ export default function TabTwoScreen() {
                 items[i].checked = !items[i].checked;
             }
             newList.push(items[i]);
-
         }
         setGroceryItems(newList);
     }
 
-    return <ScrollView style={{backgroundColor: colours.background}}>
+    //TODO: grocery item subtext indicating what dishes/daysuse it.
+    //TODO: maybe: divider and below it, next week's list ?
+    //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
+
+    return <ScrollView style={{backgroundColor: colours.background, marginTop: 50}}>
 
         <GroceryCategory sectionTitle={GroceryCategories[0]}
                          sectionItems={items.filter(item => item.category == GroceryCategories[0])}

@@ -9,7 +9,7 @@ import {Platform} from 'react-native';
 export const Colours = {
     white: '#ffffff',                // unsued for now
     lightcream: '#e8e0db',           // background              | main text
-    cream: '#e0d3c9',                // ?                       | secondary text
+    cream: '#ccc0b4',                // ?                       | secondary text
     darkgreen: '#131914',            // ?                       | background
     green: '#0a600a',                // main highlight          | secondary highlight
     pastelgreen: '#6fce6f',          // secondary highlight     | main highlight
@@ -30,7 +30,7 @@ export const Colours = {
     },
     dark: {
         text: '#e8e0db',
-        textSecondary: '#e0d3c9',
+        textSecondary: '#ccc0b4',
         background: '#131914',
         greenhighlight: '#6fce6f',
         greenhighlightSecondary: '#0a600a',
