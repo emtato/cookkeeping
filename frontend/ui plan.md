@@ -24,11 +24,65 @@ This milestone can be tested with one recipe and one planned meal. It does not n
 
 Home is an overview of the user's cooking plans, rather than a separate planning workspace. It should let someone open the app and quickly understand what is coming up and what needs attention.
 
-- A short welcome area can show the current day and a useful summary, such as the next planned meal. It should be brief enough that the actionable content remains visible.
-- An **Up next** card can show the next meal's name, time or meal slot, image if available, and a direct path to its recipe or plan entry.
-- Small preview cards can show the next few planned meals, the current grocery list's progress or remaining items, and a path back to saved recipes. Tapping a preview opens the tab that owns the full information.
-- A **Needs attention** area can surface a few timely, actionable items. Possible later examples are ingredients still needed for tomorrow's meal, food nearing its expiry date, or a planned meal that could use something already in the fridge. Each item should say what happened and where to act on it.
-- If there is no plan or list yet, use a clear starting action rather than empty summaries. For example, direct the user to choose a recipe or plan a meal.
+### Screen order and hierarchy
+
+Use this order from top to bottom:
+
+1. A compact welcome and at-a-glance summary.
+2. A compact urgent alert, only when there is an actionable issue unrelated to the next meal.
+3. **Up next**, showing the next one or two meals and any meal-specific readiness issues.
+4. A predictable overview area with **Groceries** and **Later this week** preview cards.
+5. A small row of recipe shortcuts.
+
+The screen can scroll naturally. The welcome, meals, and previews should use the space their content needs, without fixed proportions of the screen or a permanent block reserved for alerts. Keep the welcome brief and the Up next content compact enough that the other useful previews are easy to reach.
+
+### Welcome and summary
+
+- Start with a short greeting, such as “Good afternoon,” and optionally the current day or date.
+- Include a small amount of useful summary information when available. This area should orient the user quickly without repeating everything in the cards below.
+- Keep it visually lighter and shorter than Up next, which is the main piece of information on the screen.
+
+### Up next — the next one or two meals
+
+- Show the next one or two scheduled meals. Each entry can include the recipe title, meal context such as lunch or dinner, its date or time, and an image when available.
+- A short description or ingredient preview can help the user recognize the meal, but it should stay brief. Full ingredients and preparation instructions belong on the recipe detail screen.
+- Give each meal a clear path to its recipe or plan entry. Home previews the meal; the Plan tab owns schedule changes and the recipe detail screen owns the full recipe.
+- Put meal-specific warnings directly in the relevant meal card. For example, “Dinner tonight · missing 2 ingredients” can link to the grocery list. Seeing the meal and its readiness together makes the next action clear.
+
+### Urgent information — show it where it is useful
+
+- Do not place all urgent information in a separate Attention section at the bottom, where it could be missed.
+- Keep warnings about an upcoming meal inside that meal's Up next card.
+- If an urgent issue is unrelated to the next meal, show a compact alert just beneath the welcome area. For example, “Your spinach expires today” can lead to the relevant pantry information or action once that feature exists.
+- Show only timely, actionable issues, with a clear explanation and a path to act. When there are no urgent issues, omit the alert area and let the remaining content move up.
+
+### Overview area — the rest of the cooking week
+
+Start with predictable cards in a stable order. This area gives a quick view of the grocery list and meals beyond those already shown in Up next.
+
+**Groceries preview**
+
+- Show a remaining-item summary, such as “4 items left to buy,” and a preview of two or three unpurchased items.
+- Provide a clear link to the full Groceries tab for the rest of the list and shopping actions.
+- A progress bar is useful only when its scope is clear. For example, label it “Groceries for this week's planned meals” if that is the set being measured. Do not imply that an undefined list or missing meal data represents the whole week's shopping.
+
+**Later this week preview**
+
+- Show a compact selection of planned meals beyond those already visible in Up next.
+- Include enough date and meal context to remind the user what is coming, without repeating full recipe details.
+- Link to Plan for the complete schedule and any changes.
+
+Stack these preview cards vertically so meal names and grocery items have enough width. A two-by-two grid is better suited to short counts or buttons than these text previews. The overview cards should each have one clear purpose.
+
+### Recipe shortcuts
+
+Place recipe actions such as **Import recipe** and **Browse recipes** in a small row below the overview cards. These are quick actions and do not need the same amount of space as a preview containing information to read. Show actions as their functionality becomes available, and lead into Recipes for the full workflow.
+
+### Empty states and later customization
+
+- If there is no upcoming meal, provide a clear path to choose a recipe or plan a meal instead of an empty Up next card.
+- If there is no grocery list or no later meal plan, show an appropriate starting action or omit an unhelpful preview. Do not display fabricated counts, progress, or warnings.
+- User customization can come later: choosing which overview cards appear or reordering them. The initial default is the stable Groceries and Later this week overview, with recipe shortcuts below it.
 
 Home alerts depend on real underlying features. Missing-ingredient notices require a link between the plan and grocery list; expiry notices require pantry or leftover tracking. They can be added as those features exist. Avoid turning Home into a general notification feed where important items get buried.
 

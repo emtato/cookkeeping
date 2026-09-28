@@ -30,7 +30,9 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
                     </Pressable>
                     <ThemedText style={{lineHeight: 18}}>{item.name}</ThemedText>
                 </View>
-                <ThemedText type='small' style={{lineHeight: 15, marginLeft: 55, marginTop: -15, color: colours.textSecondary}}>{item.subtext}</ThemedText>
+                <ThemedText type='small' style={{
+                    lineHeight: 15, marginLeft: 55, marginTop: -15, color: colours.textSecondary
+                }}>{item.subtext}</ThemedText>
             </View>
         ))}
     </>
