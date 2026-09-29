@@ -1,6 +1,6 @@
 import {Image} from 'expo-image';
 import {SymbolView} from 'expo-symbols';
-import {Platform, Pressable, ScrollView, StyleSheet} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ExternalLink} from '@/components/external-link';
@@ -67,19 +67,19 @@ export default function TabTwoScreen() {
     //TODO: maybe: divider and below it, next week's list ?
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
 
-    return <ScrollView style={{backgroundColor: colours.background, marginTop: 50}}>
+    return <ScrollView style={{backgroundColor: colours.background}}>
+        <View style={{marginTop: 50}}>
+            <GroceryCategory sectionTitle={GroceryCategories[0]}
+                             sectionItems={items.filter(item => item.category == GroceryCategories[0])}
+                             itemChecked={groceryItemCheckedeed}/>
+            <GroceryCategory sectionTitle={GroceryCategories[1]}
+                             sectionItems={items.filter(item => item.category == GroceryCategories[1])}
+                             itemChecked={groceryItemCheckedeed}/>
+            <GroceryCategory sectionTitle={GroceryCategories[2]}
+                             sectionItems={items.filter(item => item.category == GroceryCategories[2])}
+                             itemChecked={groceryItemCheckedeed}/>
 
-        <GroceryCategory sectionTitle={GroceryCategories[0]}
-                         sectionItems={items.filter(item => item.category == GroceryCategories[0])}
-                         itemChecked={groceryItemCheckedeed}/>
-        <GroceryCategory sectionTitle={GroceryCategories[1]}
-                         sectionItems={items.filter(item => item.category == GroceryCategories[1])}
-                         itemChecked={groceryItemCheckedeed}/>
-        <GroceryCategory sectionTitle={GroceryCategories[2]}
-                         sectionItems={items.filter(item => item.category == GroceryCategories[2])}
-                         itemChecked={groceryItemCheckedeed}/>
-
-
+        </View>
     </ScrollView>
 
     //

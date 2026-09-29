@@ -6,11 +6,12 @@ import '@/global.css';
 
 import {Platform} from 'react-native';
 
-export const Colours = {
+export const Colours = {             // light mode              | dark mode
     white: '#ffffff',                // unsued for now
     lightcream: '#e8e0db',           // background              | main text
     cream: '#ccc0b4',                // ?                       | secondary text
     darkgreen: '#131914',            // ?                       | background
+    lessdarkgreen: '#1a221d',        // ?                       | background container thingy
     green: '#0a600a',                // main highlight          | secondary highlight
     pastelgreen: '#6fce6f',          // secondary highlight     | main highlight
     lightorange: '#ffcc99',          // ?
@@ -18,6 +19,7 @@ export const Colours = {
     lightbrown: '#8f693e',           // secondary highlight     | main highlight
     superdarkbrown: '#130c01',       // main text               | ?
     darkbrown: '#1a1102',            // secondary text          | ?
+
 
     light: {
         text: '#130c01',
@@ -27,6 +29,7 @@ export const Colours = {
         greenhighlightSecondary: '#6fce6f',
         brownhighlight: '#523a1a',
         brownhighlightSecondary: '#8f693e',
+        backgroundcontainer: '#ccc0b4'
     },
     dark: {
         text: '#e8e0db',
@@ -36,6 +39,7 @@ export const Colours = {
         greenhighlightSecondary: '#0a600a',
         brownhighlight: '#8f693e',
         brownhighlightSecondary: '#523a1a',
+        backgroundcontainer: '#1a221d'
     },
 } as const;
 

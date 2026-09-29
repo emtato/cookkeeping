@@ -27,6 +27,8 @@ export default function TabManager() {
           <TabTrigger name="explore" href="/groceries" asChild>
             <TabButton>Explore</TabButton>
           </TabTrigger>
+          {/* Register Plan so the meal links on Home can open it. */}
+          <TabTrigger name="plan" href="/plan" style={{display: 'none'}} />
         </CustomTabList>
       </TabList>
     </Tabs>
