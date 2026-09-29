@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
             paddingBottom: BottomTabInset + Spacing.eight,
         },
 
+        // Welcome
         section_1: {
             gap: Spacing.two,
             marginBottom: Spacing.eight,
@@ -182,27 +183,21 @@ const styles = StyleSheet.create({
             height: 2,
             borderRadius: 1,
         },
-        greeting: {
-            fontFamily: Fonts.serif,
-            fontSize: 36,
-            lineHeight: 44,
-            fontWeight: '500',
-        },
         date: {
             fontSize: 13,
             lineHeight: 20,
             fontWeight: '600',
             letterSpacing: 0.7,
         },
-        pressed: {
-            opacity: 0.75,
-            transform: [{scale: 0.99}],
+        greeting: {
+            fontFamily: Fonts.serif,
+            fontSize: 36,
+            lineHeight: 44,
+            fontWeight: '500',
         },
+
+        // Up next
         section_2: {
-            gap: Spacing.three,
-        },
-        section_3: {
-            marginTop: Spacing.seven,
             gap: Spacing.three,
         },
         section_title: {
@@ -245,27 +240,21 @@ const styles = StyleSheet.create({
             minHeight: 48,
             borderRadius: 16,
         },
+        pressed: {
+            opacity: 0.75,
+            transform: [{scale: 0.99}],
+        },
         button_text: {
             color: Colours.white,
             fontSize: 15,
             lineHeight: 22,
             fontWeight: '600',
         },
-        card_title: {
-            flex: 1,
-            fontSize: 18,
-            lineHeight: 26,
-            fontWeight: '600',
-        },
-        card_description: {
-            fontSize: 14,
-            lineHeight: 22,
-            maxWidth: 460,
-        },
-        card_action: {
-            fontSize: 14,
-            lineHeight: 22,
-            fontWeight: '600',
+
+        // The rest of your week
+        section_3: {
+            marginTop: Spacing.seven,
+            gap: Spacing.three,
         },
         overview_card: {
             borderRadius: 22,
@@ -283,6 +272,22 @@ const styles = StyleSheet.create({
             borderRadius: 14,
             alignItems: 'center',
             justifyContent: 'center',
-        }
+        },
+        card_title: {
+            flex: 1,
+            fontSize: 18,
+            lineHeight: 26,
+            fontWeight: '600',
+        },
+        card_description: {
+            fontSize: 14,
+            lineHeight: 22,
+            maxWidth: 460,
+        },
+        card_action: {
+            fontSize: 14,
+            lineHeight: 22,
+            fontWeight: '600',
+        },
     })
 ;
