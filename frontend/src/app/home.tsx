@@ -1,4 +1,5 @@
 import {Link} from 'expo-router';
+import {Image} from 'expo-image';
 import {SymbolView} from 'expo-symbols';
 import {Platform, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -32,12 +33,49 @@ export default function HomeScreen() {
 
     //TODO:  stylw w more fonts
 
-    const testMeals: Meal[] = [{
-        "id": 3, name: "hi", description: 'desc', ingredients: ['ing'], steps: ['step1', 'step2']
-    }, {
-        "id": 2, name: "asee", description: 'dedededede', ingredients: ['bebebebeb'], steps: ['see', 'bee'],
-    }]
-    const [meals, setMeals] = useState<Meal[]>(testMeals);
+    const testMeals: Meal[] = [
+        {
+            id: 3,
+            name: 'Tomato basil pasta',
+            description: 'Garlicky tomato sauce, fresh basil and parmesan tossed with rigatoni.',
+            ingredients: ['Rigatoni', 'Cherry tomatoes', 'Garlic', 'Fresh basil', 'Parmesan', 'Olive oil'],
+            steps: ['Cook the pasta until just tender.', 'Simmer the tomatoes and garlic in olive oil.',
+                'Toss everything together and finish with basil and parmesan.'],
+            dateMeal: 'Dinner on Wednesday',
+            image: 'https://pokestop.io/img/pokemon/duosion-256x256.png',
+        },
+        {
+            id: 2,
+            name: 'Lemony chickpea couscous',
+            description: '',
+            ingredients: ['Chickpeas', 'Couscous', 'Spinach', 'Lemon', 'Plain yogurt', 'Cumin'],
+            steps: ['Prepare the couscous with hot stock.', 'Warm the chickpeas with cumin and fold in the spinach.',
+                'Serve with lemon yogurt.'],
+            dateMeal: 'Lunch on Thursday',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfiYB6Ml7HidF2uhaxeXtuQAxLhTDSJzyS9kiylX2JNw&s=10',
+        },
+        {
+            id: 4,
+            name: 'Roasted beet & yogurt bowls',
+            description: 'Tender roasted beets with herbed yogurt, toasted walnuts and greens.',
+            ingredients: ['Beets', 'Plain yogurt', 'Walnuts', 'Mixed greens', 'Dill', 'Lemon'],
+            steps: ['Roast the beets until tender.', 'Mix yogurt with dill and lemon.',
+                'Layer the beets over greens and top with yogurt and walnuts.'],
+            dateMeal: 'Dinner on Friday',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Z8sm6ISVoIg6eetvaanMqqWATc4KU9WmspeQH1vHww&s=10',
+        },
+        {
+            id: 5,
+            name: 'Ginger chicken noodle soup',
+            description: 'A cosy bowl of chicken, noodles and greens in a ginger broth.',
+            ingredients: ['Chicken breast', 'Noodles', 'Ginger', 'Carrots', 'Baby spinach', 'Chicken stock'],
+            steps: ['Simmer ginger and carrots in the stock.', 'Cook the chicken and noodles in the broth.',
+                'Add spinach just before serving.'],
+            dateMeal: 'Breakfast on Saturday',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg3HAxP31Aex5A7ac6Mcu0Kz5NhKlpA0ThDsOOraDQBg&s',
+        },
+    ]
+    const [meals, setMeals] = useState<Meal[]>(testMeals); //make sure is empty list if no meals
 
     const testshoppingList: GroceryItem[] = [
         {id: '1', name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
@@ -47,7 +85,7 @@ export default function HomeScreen() {
         {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
         {id: '6', name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
         {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
-    const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList);
+    const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList); //make sure is empty list if no meals
 
     return (
         <SafeAreaView edges={['top', 'left', 'right']} style={[styles.screen, {backgroundColor: colours.background}]}>
@@ -61,11 +99,12 @@ export default function HomeScreen() {
                         {greeting}, <Text style={{color: colours.greenhighlight, fontStyle: 'italic'}}>{name}!</Text>
                     </ThemedText>
                 </View>
+                {/*section 2*/}
                 <View style={styles.section_2}>
                     <ThemedText type="subtitle" style={styles.section_title}>Up next</ThemedText>
 
-                    {/* swap starting state with the next planned meals when meals != undef */}
-                    {meals == undefined &&
+                    {/* Show a starting action when there are no planned meals. */}
+                    {meals.length == 0 &&
                         <View style={[styles.next_meal, {backgroundColor: colours.backgroundcontainer}]}>
                             <View style={[styles.meal_icon, {backgroundColor: colours.background}]}>
                                 <SymbolView name={{ios: 'fork.knife', android: 'restaurant', web: 'restaurant'}}
@@ -86,11 +125,36 @@ export default function HomeScreen() {
                                 </Pressable>
                             </Link>
                         </View>}
-                    {meals != undefined && <View>
-                        {/* add meal display !*/}
-
-
-                    </View>}
+                    {meals.slice(0, 2).map((meal, index) =>
+                        <Link href="/plan" asChild key={meal.id}>
+                            <Pressable>{({pressed}) => <View style={[styles.meal_card,
+                                {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
+                                {meal.image ?
+                                    <Image source={{uri: meal.image}} contentFit="cover"
+                                           accessibilityLabel={meal.name} style={styles.meal_image}/>
+                                    : <View style={[styles.meal_image, styles.meal_placeholder,
+                                        {backgroundColor: colours.background}]}>
+                                        <SymbolView
+                                            name={{ios: 'fork.knife', android: 'restaurant', web: 'restaurant'}}
+                                            tintColor={colours.greenhighlight} size={26}/>
+                                    </View>}
+                                <View style={styles.meal_content}>
+                                    <ThemedText style={[styles.meal_position, {color: colours.greenhighlight}]}>
+                                        {index === 0 ? `${meal.dateMeal}` : `${meal.dateMeal}`}
+                                    </ThemedText>
+                                    <ThemedText style={styles.meal_card_title}
+                                                numberOfLines={2}>{meal.name}</ThemedText>
+                                    <ThemedText themeColour="textSecondary"
+                                                style={styles.meal_card_description}
+                                                numberOfLines={2}>
+                                        {meal.description ? meal.description : "No description :("}
+                                    </ThemedText>
+                                </View>
+                            </View>}
+                            </Pressable>
+                        </Link>
+                    )}
+                    {/*section 3*/}
                 </View>
                 <View style={styles.section_3}>
                     <ThemedText type="subtitle" style={styles.section_title}>The rest of your week</ThemedText>
@@ -122,7 +186,7 @@ export default function HomeScreen() {
                         {/* same here*/}
 
                     </View>}
-                    {(meals == undefined || meals.length < 3) && <Link href="/plan" asChild>
+                    {(meals.length < 3) && <Link href="/plan" asChild>
                         <Pressable>{({pressed}) => <View style={[styles.overview_card,
                             {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
                             <View style={styles.card_heading}>
@@ -182,18 +246,22 @@ const styles = StyleSheet.create({
             width: Spacing.four,
             height: 2,
             borderRadius: 1,
+            marginTop: -Spacing.four
         },
         date: {
             fontSize: 13,
             lineHeight: 20,
             fontWeight: '600',
             letterSpacing: 0.7,
+            marginTop: -Spacing.four
         },
         greeting: {
             fontFamily: Fonts.serif,
             fontSize: 36,
             lineHeight: 44,
             fontWeight: '500',
+            marginTop: -Spacing.two
+
         },
 
         // Up next
@@ -248,6 +316,53 @@ const styles = StyleSheet.create({
             color: Colours.white,
             fontSize: 15,
             lineHeight: 22,
+            fontWeight: '600',
+        },
+        meal_card: {
+            flexDirection: 'row',
+            gap: Spacing.four,
+            borderRadius: 22,
+            padding: Spacing.four,
+        },
+        meal_image: {
+            width: 104,
+            height: 112,
+            borderRadius: 16,
+        },
+        meal_placeholder: {
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        meal_content: {
+            flex: 1,
+            minWidth: 0,
+            justifyContent: 'center',
+            gap: Spacing.one,
+        },
+        meal_position: {
+            fontSize: 11,
+            lineHeight: 16,
+            fontWeight: '700',
+            letterSpacing: 1,
+        },
+        meal_card_title: {
+            fontSize: 18,
+            lineHeight: 24,
+            fontWeight: '600',
+        },
+        meal_card_description: {
+            fontSize: 13,
+            lineHeight: 19,
+        },
+        meal_card_action: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: Spacing.one,
+            marginTop: Spacing.two,
+        },
+        meal_card_action_text: {
+            fontSize: 13,
+            lineHeight: 19,
             fontWeight: '600',
         },
 
