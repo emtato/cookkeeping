@@ -78,14 +78,19 @@ export default function HomeScreen() {
     const [meals, setMeals] = useState<Meal[]>(testMeals); //make sure is empty list if no meals
 
     const testshoppingList: GroceryItem[] = [
-        {id: '1', name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
+        {id: '1', name: 'one egg', checked: true, category: 'eggs', subtext: 'dish a, b c'},
         {id: '2', name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
         {id: '3', name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
-        {id: '4', name: 'em', checked: false, category: 'emma', subtext: 'ss'},
+        {id: '4', name: 'em', checked: true, category: 'emma', subtext: 'ss'},
         {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
-        {id: '6', name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
+        {id: '6', name: 'bagle', checked: true, category: 'other food', subtext: 'asdasdv'},
         {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
     const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList); //make sure is empty list if no meals
+    const remainingItems = items.filter(item => !item.checked);
+    const boughtCount = items.length - remainingItems.length;
+    const previewItems = remainingItems.slice(0, 4);
+    const hiddenCount = remainingItems.length - previewItems.length;
+    const progress = items.length === 0 ? 0 : (boughtCount / items.length) * 100;
 
     return (
         <SafeAreaView edges={['top', 'left', 'right']} style={[styles.screen, {backgroundColor: colours.background}]}>
@@ -99,6 +104,9 @@ export default function HomeScreen() {
                         {greeting}, <Text style={{color: colours.greenhighlight, fontStyle: 'italic'}}>{name}!</Text>
                     </ThemedText>
                 </View>
+
+                {/*TODO: urgent section for exprigin / other */}
+
                 {/*section 2*/}
                 <View style={styles.section_2}>
                     <ThemedText type="subtitle" style={styles.section_title}>Up next</ThemedText>
@@ -159,8 +167,7 @@ export default function HomeScreen() {
                 <View style={styles.section_3}>
                     <ThemedText type="subtitle" style={styles.section_title}>The rest of your week</ThemedText>
 
-                    {/* swap with data when done as well */}
-                    {items == undefined && <Link href="/groceries" asChild>
+                    <Link href="/groceries" asChild>
                         <Pressable>{({pressed}) => <View style={[styles.overview_card,
                             {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
                             <View style={styles.card_heading}>
@@ -170,22 +177,58 @@ export default function HomeScreen() {
                                         tintColor={colours.greenhighlight} size={21}/>
                                 </View>
                                 <ThemedText style={styles.card_title}>Groceries</ThemedText>
+                                {items.length > 0 &&
+                                    <ThemedText themeColour="textSecondary" style={styles.grocery_remaining}>
+                                        {remainingItems.length === 0 ? 'All bought ^w^' : `${remainingItems.length} left`}
+                                    </ThemedText>}
                                 <SymbolView
                                     name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
                                     tintColor={colours.textSecondary} size={18}/>
                             </View>
-                            <ThemedText themeColour="textSecondary" style={styles.card_description}>
-                                Everything to pick up, in one place. Check off your list as you shop.
-                            </ThemedText>
-                            <ThemedText style={[styles.card_action, {color: colours.greenhighlight}]}>View grocery
-                                list</ThemedText>
+                            {/*TODO make each item pressable and update parent for new list*/}
+                            {items.length === 0 ?
+                                <ThemedText themeColour="textSecondary" style={styles.card_description}>
+                                    Nothing on your list yet. Add a few things to get started.
+                                </ThemedText>
+                                : <> {/* list length not 0*/}
+                                    {remainingItems.length > 0 ?
+                                        <View style={styles.grocery_chips}>
+                                            {previewItems.map(item =>
+                                                <View key={item.id} style={[styles.grocery_chip,
+                                                    {backgroundColor: colours.background}]}>
+                                                    <ThemedText numberOfLines={1} style={styles.grocery_chip_text}>
+                                                        {item.name}
+                                                    </ThemedText>
+                                                </View>
+                                            )}
+                                            {hiddenCount > 0 &&
+                                                <View style={[styles.grocery_chip,
+                                                    {backgroundColor: colours.greenhighlightSecondary}]}>
+                                                    <ThemedText style={styles.grocery_chip_text}>
+                                                        +{hiddenCount} more
+                                                    </ThemedText>
+                                                </View>}
+                                        </View>
+                                        : <ThemedText themeColour="textSecondary" style={styles.card_description}>
+                                            Everything on this list is bought.
+                                        </ThemedText>}
+                                    <View style={styles.grocery_progress}>
+                                        <ThemedText themeColour="textSecondary" style={styles.grocery_progress_label}>
+                                            {boughtCount} of {items.length} bought
+                                        </ThemedText>
+                                        <View style={[styles.grocery_progress_track,
+                                            {backgroundColor: colours.background}]}>
+                                            <View style={[styles.grocery_progress_fill,
+                                                {
+                                                    backgroundColor: colours.greenhighlight,
+                                                    width: `${progress}%` as `${number}%`
+                                                }]}/>
+                                        </View>
+                                    </View>
+                                </>}
                         </View>}
                         </Pressable>
-                    </Link>}
-                    {items != undefined && <View>
-                        {/* same here*/}
-
-                    </View>}
+                    </Link>
                     {(meals.length < 3) && <Link href="/plan" asChild>
                         <Pressable>{({pressed}) => <View style={[styles.overview_card,
                             {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
@@ -393,6 +436,45 @@ const styles = StyleSheet.create({
             fontSize: 18,
             lineHeight: 26,
             fontWeight: '600',
+        },
+        grocery_remaining: {
+            fontSize: 12,
+            lineHeight: 18,
+            fontWeight: '600',
+        },
+        grocery_chips: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: Spacing.two,
+        },
+        grocery_chip: {
+            maxWidth: '100%',
+            borderRadius: 999,
+            paddingHorizontal: Spacing.three,
+            paddingVertical: Spacing.one,
+        },
+        grocery_chip_text: {
+            fontSize: 13,
+            lineHeight: 20,
+            fontWeight: '500',
+        },
+        grocery_progress: {
+            gap: Spacing.two,
+            marginTop: Spacing.one,
+        },
+        grocery_progress_label: {
+            fontSize: 12,
+            lineHeight: 18,
+            fontWeight: '600',
+        },
+        grocery_progress_track: {
+            height: 8,
+            borderRadius: 4,
+            overflow: 'hidden',
+        },
+        grocery_progress_fill: {
+            height: '100%',
+            borderRadius: 4,
         },
         card_description: {
             fontSize: 14,
