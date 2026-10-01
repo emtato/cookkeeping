@@ -76,6 +76,7 @@ export default function HomeScreen() {
         },
     ]
     const [meals, setMeals] = useState<Meal[]>(testMeals); //make sure is empty list if no meals
+    const laterMeals = meals.slice(2, 4); //maybe change to include more
 
     const testshoppingList: GroceryItem[] = [
         {id: '1', name: 'one egg', checked: true, category: 'eggs', subtext: 'dish a, b c'},
@@ -100,17 +101,28 @@ export default function HomeScreen() {
                         <View style={[styles.date_accent, {backgroundColor: colours.greenhighlight}]}/>
                         <ThemedText themeColour="textSecondary" style={styles.date}>{formattedDate}</ThemedText>
                     </View>
-                    <ThemedText type="title" style={styles.greeting}>
-                        {greeting}, <Text style={{color: colours.greenhighlight, fontStyle: 'italic'}}>{name}!</Text>
-                    </ThemedText>
+                    <View style={styles.welcome_row}>
+                        <ThemedText type="title" style={styles.greeting}>
+                            {greeting}, <Text
+                            style={{color: colours.greenhighlight, fontStyle: 'italic'}}>{name}!</Text>
+                        </ThemedText>
+                        {/* TODO: link to import flow */}
+                        <Link href="/recipes" asChild>
+                            <Pressable>{({pressed}) =>
+                                <View style={[styles.import_button,
+                                    {backgroundColor: colours.greenhighlight}, pressed && styles.pressed]}>
+                                    <SymbolView name={{ios: 'plus', android: 'add', web: 'add'}}
+                                                tintColor={colours.background} size={24}/>
+                                </View>}
+                            </Pressable>
+                        </Link>
+                    </View>
                 </View>
 
                 {/*TODO: urgent section for exprigin / other */}
 
                 {/*section 2*/}
                 <View style={styles.section_2}>
-                    <ThemedText type="subtitle" style={styles.section_title}>Up next</ThemedText>
-
                     {/* Show a starting action when there are no planned meals. */}
                     {meals.length == 0 &&
                         <View style={[styles.next_meal, {backgroundColor: colours.backgroundcontainer}]}>
@@ -184,13 +196,12 @@ export default function HomeScreen() {
                                 <SymbolView
                                     name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
                                     tintColor={colours.textSecondary} size={18}/>
-                            </View>
-                            {/*TODO make each item pressable and update parent for new list*/}
+                            </View>{/*TODO make each item pressable and update parent for new list*/}
                             {items.length === 0 ?
                                 <ThemedText themeColour="textSecondary" style={styles.card_description}>
                                     Nothing on your list yet. Add a few things to get started.
                                 </ThemedText>
-                                : <> {/* list length not 0*/}
+                                : <>{/* list length not 0*/}
                                     {remainingItems.length > 0 ?
                                         <View style={styles.grocery_chips}>
                                             {previewItems.map(item =>
@@ -229,7 +240,7 @@ export default function HomeScreen() {
                         </View>}
                         </Pressable>
                     </Link>
-                    {(meals.length < 3) && <Link href="/plan" asChild>
+                    {meals.length > 0 && laterMeals.length === 0 && <Link href="/plan" asChild>
                         <Pressable>{({pressed}) => <View style={[styles.overview_card,
                             {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
                             <View style={styles.card_heading}>
@@ -251,10 +262,34 @@ export default function HomeScreen() {
                         </View>}
                         </Pressable>
                     </Link>}
-                    {meals.length > 2 && <View>
-
-
-                    </View>}
+                    {laterMeals.length > 0 && <Link href="/plan" asChild>
+                        <Pressable>{({pressed}) => <View style={[styles.overview_card,
+                            {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
+                            <View style={styles.card_heading}>
+                                <View style={[styles.preview_icon, {backgroundColor: colours.background}]}>
+                                    <SymbolView
+                                        name={{ios: 'calendar', android: 'calendar_month', web: 'calendar_month'}}
+                                        tintColor={colours.brownhighlight} size={21}/>
+                                </View>
+                                <ThemedText style={styles.card_title}>Later this week</ThemedText>
+                                <SymbolView
+                                    name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
+                                    tintColor={colours.textSecondary} size={18}/>
+                            </View>
+                            <View style={styles.later_meals}>
+                                {laterMeals.map((meal, index) =>
+                                    <View key={meal.id} style={[styles.later_meal,
+                                        index > 0 && {borderTopWidth: 1, borderTopColor: colours.background}]}>
+                                        <ThemedText style={[styles.later_meal_date,
+                                            {color: colours.brownhighlight}]}>{meal.dateMeal}</ThemedText>
+                                        <ThemedText style={styles.later_meal_title}
+                                                    numberOfLines={2}>{meal.name}</ThemedText>
+                                    </View>
+                                )}
+                            </View>
+                        </View>}
+                        </Pressable>
+                    </Link>}
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -280,6 +315,11 @@ const styles = StyleSheet.create({
             gap: Spacing.two,
             marginBottom: Spacing.eight,
         },
+        welcome_row: {
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: Spacing.three,
+        },
         date_row: {
             flexDirection: 'row',
             alignItems: 'center',
@@ -299,6 +339,8 @@ const styles = StyleSheet.create({
             marginTop: -Spacing.four
         },
         greeting: {
+            flex: 1,
+            minWidth: 0,
             fontFamily: Fonts.serif,
             fontSize: 36,
             lineHeight: 44,
@@ -306,14 +348,23 @@ const styles = StyleSheet.create({
             marginTop: -Spacing.two
 
         },
+        import_button: {
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: -Spacing.one - Spacing.half
+        },
 
         // Up next
         section_2: {
+            marginTop: -Spacing.four,
             gap: Spacing.three,
         },
         section_title: {
             fontSize: 18,
-            lineHeight: 26,
+            lineHeight: 20,
             fontWeight: '600',
         },
         next_meal: {
@@ -475,6 +526,24 @@ const styles = StyleSheet.create({
         grocery_progress_fill: {
             height: '100%',
             borderRadius: 4,
+        },
+        later_meals: {
+            gap: Spacing.two,
+        },
+        later_meal: {
+            gap: Spacing.one,
+            paddingVertical: Spacing.two,
+        },
+        later_meal_date: {
+            fontSize: 11,
+            lineHeight: 16,
+            fontWeight: '700',
+            letterSpacing: 0.5,
+        },
+        later_meal_title: {
+            fontSize: 15,
+            lineHeight: 22,
+            fontWeight: '600',
         },
         card_description: {
             fontSize: 14,
