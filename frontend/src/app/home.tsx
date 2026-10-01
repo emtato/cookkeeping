@@ -298,262 +298,249 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
 
-        screen: {
-            flex: 1,
-        },
-        home_container: {
-            width: '100%',
-            maxWidth: MaxContentWidth,
-            alignSelf: 'center',
-            paddingHorizontal: Spacing.five,
-            paddingTop: Platform.OS === 'web' ? Spacing.twenty : Spacing.five,
-            paddingBottom: BottomTabInset + Spacing.eight,
-        },
+    screen: {
+        flex: 1,
+    },
+    home_container: {
+        width: '100%',
+        maxWidth: MaxContentWidth,
+        alignSelf: 'center',
+        paddingHorizontal: Spacing.five,
+        paddingTop: Platform.OS === 'web' ? Spacing.twenty : Spacing.five,
+        paddingBottom: BottomTabInset + Spacing.eight,
+    },
 
-        // Welcome
-        section_1: {
-            gap: Spacing.two,
-            marginBottom: Spacing.eight,
-        },
-        welcome_row: {
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            gap: Spacing.three,
-        },
-        date_row: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: Spacing.two,
-        },
-        date_accent: {
-            width: Spacing.four,
-            height: 2,
-            borderRadius: 1,
-            marginTop: -Spacing.four
-        },
-        date: {
-            fontSize: 13,
-            lineHeight: 20,
-            fontWeight: '600',
-            letterSpacing: 0.7,
-            marginTop: -Spacing.four
-        },
-        greeting: {
-            flex: 1,
-            minWidth: 0,
-            fontFamily: Fonts.serif,
-            fontSize: 36,
-            lineHeight: 44,
-            fontWeight: '500',
-            marginTop: -Spacing.two
+    // Welcome
+    section_1: {
+        gap: Spacing.two,
+        marginBottom: Spacing.eight,
+    },
+    welcome_row: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: Spacing.three,
+    },
+    date_row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.two,
+    },
+    date_accent: {
+        width: Spacing.four,
+        height: 2,
+        borderRadius: 1,
+        marginTop: -Spacing.four
+    },
+    date: {
+        fontSize: 13,
+        lineHeight: 20,
+        fontWeight: '600',
+        letterSpacing: 0.7,
+        marginTop: -Spacing.four
+    },
+    greeting: {
+        flex: 1,
+        minWidth: 0,
+        fontFamily: Fonts.serif,
+        fontSize: 36,
+        lineHeight: 44,
+        fontWeight: '500',
+        marginTop: -Spacing.two
 
-        },
-        import_button: {
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: -Spacing.one - Spacing.half
-        },
+    },
+    import_button: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: -Spacing.one - Spacing.half
+    },
 
-        // Up next
-        section_2: {
-            marginTop: -Spacing.four,
-            gap: Spacing.three,
-        },
-        section_title: {
-            fontSize: 18,
-            lineHeight: 20,
-            fontWeight: '600',
-        },
-        next_meal: {
-            borderRadius: 24,
-            padding: Spacing.six,
-            alignItems: 'flex-start',
-        },
-        meal_icon: {
-            width: 56,
-            height: 56,
-            borderRadius: 28,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: Spacing.four,
-        },
-        meal_title: {
-            fontSize: 24,
-            lineHeight: 32,
-            fontWeight: '600',
-        },
-        meal_description: {
-            marginTop: Spacing.two,
-            maxWidth: 420,
-            fontSize: 15,
-            lineHeight: 23,
-        },
-        plan_button: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: Spacing.three,
-            marginTop: Spacing.five,
-            paddingVertical: Spacing.three,
-            paddingHorizontal: Spacing.four,
-            minHeight: 48,
-            borderRadius: 16,
-        },
-        pressed: {
-            opacity: 0.75,
-            transform: [{scale: 0.99}],
-        },
-        button_text: {
-            color: Colours.white,
-            fontSize: 15,
-            lineHeight: 22,
-            fontWeight: '600',
-        },
-        meal_card: {
-            flexDirection: 'row',
-            gap: Spacing.four,
-            borderRadius: 22,
-            padding: Spacing.four,
-        },
-        meal_image: {
-            width: 104,
-            height: 112,
-            borderRadius: 16,
-        },
-        meal_placeholder: {
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        meal_content: {
-            flex: 1,
-            minWidth: 0,
-            justifyContent: 'center',
-            gap: Spacing.one,
-        },
-        meal_position: {
-            fontSize: 11,
-            lineHeight: 16,
-            fontWeight: '700',
-            letterSpacing: 1,
-        },
-        meal_card_title: {
-            fontSize: 18,
-            lineHeight: 24,
-            fontWeight: '600',
-        },
-        meal_card_description: {
-            fontSize: 13,
-            lineHeight: 19,
-        },
-        meal_card_action: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: Spacing.one,
-            marginTop: Spacing.two,
-        },
-        meal_card_action_text: {
-            fontSize: 13,
-            lineHeight: 19,
-            fontWeight: '600',
-        },
-
-        // The rest of your week
-        section_3: {
-            marginTop: Spacing.seven,
-            gap: Spacing.three,
-        },
-        overview_card: {
-            borderRadius: 22,
-            padding: Spacing.five,
-            gap: Spacing.three,
-        },
-        card_heading: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: Spacing.three,
-        },
-        preview_icon: {
-            width: 40,
-            height: 40,
-            borderRadius: 14,
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        card_title: {
-            flex: 1,
-            fontSize: 18,
-            lineHeight: 26,
-            fontWeight: '600',
-        },
-        grocery_remaining: {
-            fontSize: 12,
-            lineHeight: 18,
-            fontWeight: '600',
-        },
-        grocery_chips: {
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: Spacing.two,
-        },
-        grocery_chip: {
-            maxWidth: '100%',
-            borderRadius: 999,
-            paddingHorizontal: Spacing.three,
-            paddingVertical: Spacing.one,
-        },
-        grocery_chip_text: {
-            fontSize: 13,
-            lineHeight: 20,
-            fontWeight: '500',
-        },
-        grocery_progress: {
-            gap: Spacing.two,
-            marginTop: Spacing.one,
-        },
-        grocery_progress_label: {
-            fontSize: 12,
-            lineHeight: 18,
-            fontWeight: '600',
-        },
-        grocery_progress_track: {
-            height: 8,
-            borderRadius: 4,
-            overflow: 'hidden',
-        },
-        grocery_progress_fill: {
-            height: '100%',
-            borderRadius: 4,
-        },
-        later_meals: {
-            gap: Spacing.two,
-        },
-        later_meal: {
-            gap: Spacing.one,
-            paddingVertical: Spacing.two,
-        },
-        later_meal_date: {
-            fontSize: 11,
-            lineHeight: 16,
-            fontWeight: '700',
-            letterSpacing: 0.5,
-        },
-        later_meal_title: {
-            fontSize: 15,
-            lineHeight: 22,
-            fontWeight: '600',
-        },
-        card_description: {
-            fontSize: 14,
-            lineHeight: 22,
-            maxWidth: 460,
-        },
-        card_action: {
-            fontSize: 14,
-            lineHeight: 22,
-            fontWeight: '600',
-        },
-    })
-;
+    // Up next
+    section_2: {
+        marginTop: -Spacing.four,
+        gap: Spacing.three,
+    },
+    section_title: {
+        fontSize: 18,
+        lineHeight: 20,
+        fontWeight: '600',
+    },
+    next_meal: {
+        borderRadius: 24,
+        padding: Spacing.six,
+        alignItems: 'flex-start',
+    },
+    meal_icon: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: Spacing.four,
+    },
+    meal_title: {
+        fontSize: 24,
+        lineHeight: 32,
+        fontWeight: '600',
+    },
+    meal_description: {
+        marginTop: Spacing.two,
+        maxWidth: 420,
+        fontSize: 15,
+        lineHeight: 23,
+    },
+    plan_button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: Spacing.three,
+        marginTop: Spacing.five,
+        paddingVertical: Spacing.three,
+        paddingHorizontal: Spacing.four,
+        minHeight: 48,
+        borderRadius: 16,
+    },
+    pressed: {
+        opacity: 0.75,
+        transform: [{scale: 0.99}],
+    },
+    button_text: {
+        color: Colours.white,
+        fontSize: 15,
+        lineHeight: 22,
+        fontWeight: '600',
+    },
+    meal_card: {
+        flexDirection: 'row',
+        gap: Spacing.four,
+        borderRadius: 22,
+        padding: Spacing.four,
+    },
+    meal_image: {
+        width: 104,
+        height: 112,
+        borderRadius: 16,
+    },
+    meal_placeholder: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    meal_content: {
+        flex: 1,
+        minWidth: 0,
+        justifyContent: 'center',
+        gap: Spacing.one,
+    },
+    meal_position: {
+        fontSize: 11,
+        lineHeight: 16,
+        fontWeight: '700',
+        letterSpacing: 1,
+    },
+    meal_card_title: {
+        fontSize: 18,
+        lineHeight: 24,
+        fontWeight: '600',
+    },
+    meal_card_description: {
+        fontSize: 13,
+        lineHeight: 19,
+    },
+    // The rest of your week
+    section_3: {
+        marginTop: Spacing.seven,
+        gap: Spacing.three,
+    },
+    overview_card: {
+        borderRadius: 22,
+        padding: Spacing.five,
+        gap: Spacing.three,
+    },
+    card_heading: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.three,
+    },
+    preview_icon: {
+        width: 40,
+        height: 40,
+        borderRadius: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    card_title: {
+        flex: 1,
+        fontSize: 18,
+        lineHeight: 26,
+        fontWeight: '600',
+    },
+    grocery_remaining: {
+        fontSize: 12,
+        lineHeight: 18,
+        fontWeight: '600',
+    },
+    grocery_chips: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: Spacing.two,
+    },
+    grocery_chip: {
+        maxWidth: '100%',
+        borderRadius: 999,
+        paddingHorizontal: Spacing.three,
+        paddingVertical: Spacing.one,
+    },
+    grocery_chip_text: {
+        fontSize: 13,
+        lineHeight: 20,
+        fontWeight: '500',
+    },
+    grocery_progress: {
+        gap: Spacing.two,
+        marginTop: Spacing.one,
+    },
+    grocery_progress_label: {
+        fontSize: 12,
+        lineHeight: 18,
+        fontWeight: '600',
+    },
+    grocery_progress_track: {
+        height: 8,
+        borderRadius: 4,
+        overflow: 'hidden',
+    },
+    grocery_progress_fill: {
+        height: '100%',
+        borderRadius: 4,
+    },
+    later_meals: {
+        gap: Spacing.two,
+    },
+    later_meal: {
+        gap: Spacing.one,
+        paddingVertical: Spacing.two,
+    },
+    later_meal_date: {
+        fontSize: 11,
+        lineHeight: 16,
+        fontWeight: '700',
+        letterSpacing: 0.5,
+    },
+    later_meal_title: {
+        fontSize: 15,
+        lineHeight: 22,
+        fontWeight: '600',
+    },
+    card_description: {
+        fontSize: 14,
+        lineHeight: 22,
+        maxWidth: 460,
+    },
+    card_action: {
+        fontSize: 14,
+        lineHeight: 22,
+        fontWeight: '600',
+    },
+});

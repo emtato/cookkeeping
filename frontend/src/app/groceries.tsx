@@ -7,9 +7,8 @@ import {ExternalLink} from '@/components/external-link';
 import {ThemedText} from '@/components/themed-text';
 import {ThemedView} from '@/components/themed-view';
 import {Collapsible} from '@/components/ui/collapsible';
-import {BottomTabInset, MaxContentWidth, Spacing} from '@/constants/theme';
 import {useTheme} from '@/hooks/use-theme';
-import {Colours} from '@/constants/theme'
+import {Colours, Spacing} from '@/constants/theme'
 import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
@@ -52,67 +51,27 @@ export default function TabTwoScreen() {
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
 
     return <ScrollView style={{backgroundColor: colours.background}}>
-        <View style={{marginTop: 50}}>
+        <View>
+            <ThemedText type="title" style={styles.title}>This week</ThemedText>
             {groceryCategories.map((category, index) =>
                 <GroceryCategory key={index} sectionTitle={groceryCategories[index]}
                                  sectionItems={items.filter(item => item.category.charAt(0).toUpperCase() + item.category.slice(1) == groceryCategories[index])}
                                  itemChecked={groceryItemCheckeded}/>
             )}
-
         </View>
     </ScrollView>
+
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        flex: 1,
-    },
-    contentContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
     container: {
-        maxWidth: MaxContentWidth,
-        flexGrow: 1,
-    },
-    titleContainer: {
-        gap: Spacing.three,
+        flex: 1,
         alignItems: 'center',
-        paddingHorizontal: Spacing.four,
-        paddingVertical: Spacing.six,
-    },
-    centerText: {
-        textAlign: 'center',
-    },
-    pressed: {
-        opacity: 0.7,
-    },
-    linkButton: {
-        flexDirection: 'row',
-        paddingHorizontal: Spacing.four,
-        paddingVertical: Spacing.two,
-        borderRadius: Spacing.five,
         justifyContent: 'center',
-        gap: Spacing.one,
-        alignItems: 'center',
     },
-    sectionsWrapper: {
-        gap: Spacing.five,
-        paddingHorizontal: Spacing.four,
-        paddingTop: Spacing.three,
-    },
-    collapsibleContent: {
-        alignItems: 'center',
-    },
-    imageTutorial: {
-        width: '100%',
-        aspectRatio: 296 / 171,
-        borderRadius: Spacing.three,
+    title: {
+        fontWeight: 'bold',
+        marginBottom: Spacing.two,
         marginTop: Spacing.two,
-    },
-    imageReact: {
-        width: 100,
-        height: 100,
-        alignSelf: 'center',
     },
 });
