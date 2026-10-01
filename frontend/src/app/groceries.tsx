@@ -7,7 +7,6 @@ import {ExternalLink} from '@/components/external-link';
 import {ThemedText} from '@/components/themed-text';
 import {ThemedView} from '@/components/themed-view';
 import {Collapsible} from '@/components/ui/collapsible';
-import {WebBadge} from '@/components/web-badge';
 import {BottomTabInset, MaxContentWidth, Spacing} from '@/constants/theme';
 import {useTheme} from '@/hooks/use-theme';
 import {Colours} from '@/constants/theme'
@@ -19,7 +18,6 @@ import {useState} from "react";
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
-    const [GroceryCategories, setGroceryCategories] = useState<string[]>(['eggs', 'emma', 'other food']);//modify with real grocery categories list
     const [items, setGroceryItems] = useState<GroceryItem[]>([
         {id: '1', name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
         {id: '2', name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
@@ -27,32 +25,18 @@ export default function TabTwoScreen() {
         {id: '4', name: 'em', checked: false, category: 'emma', subtext: 'ss'},
         {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
         {id: '6', name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
-        {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}
+        {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'},
+        {id: '8', name: 'espurr', checked: false, category: 'are you sure this is edible?', subtext: 'creaturee....'}
     ]); //change to actual list from backend later
+    const categories = new Set<string>(); //find all grocery categories for map later
+    for (const item of items) {
+        const category = item.category.toLowerCase();
+        const displayName = category.charAt(0).toUpperCase() + category.slice(1);
+        categories.add(displayName);
+    }
+    const groceryCategories = [...categories];
 
-
-    // const safeAreaInsets = useSafeAreaInsets();
-    // const insets = {
-    //     ...safeAreaInsets,
-    //     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
-    // };
-    // const theme = useTheme();
-
-    // const contentPlatformStyle = Platform.select({
-    //     android: {
-    //         paddingTop: insets.top,
-    //         paddingLeft: insets.left,
-    //         paddingRight: insets.right,
-    //         paddingBottom: insets.bottom,
-    //     },
-    //     web: {
-    //         paddingTop: Spacing.six,
-    //         paddingBottom: Spacing.four,
-    //     },
-    // });
-
-
-    function groceryItemCheckedeed(item: GroceryItem) {
+    function groceryItemCheckeded(item: GroceryItem) {
         let newList: GroceryItem[] = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].id == item.id) {
@@ -69,110 +53,14 @@ export default function TabTwoScreen() {
 
     return <ScrollView style={{backgroundColor: colours.background}}>
         <View style={{marginTop: 50}}>
-            <GroceryCategory sectionTitle={GroceryCategories[0]}
-                             sectionItems={items.filter(item => item.category == GroceryCategories[0])}
-                             itemChecked={groceryItemCheckedeed}/>
-            <GroceryCategory sectionTitle={GroceryCategories[1]}
-                             sectionItems={items.filter(item => item.category == GroceryCategories[1])}
-                             itemChecked={groceryItemCheckedeed}/>
-            <GroceryCategory sectionTitle={GroceryCategories[2]}
-                             sectionItems={items.filter(item => item.category == GroceryCategories[2])}
-                             itemChecked={groceryItemCheckedeed}/>
+            {groceryCategories.map((category, index) =>
+                <GroceryCategory key={index} sectionTitle={groceryCategories[index]}
+                                 sectionItems={items.filter(item => item.category.charAt(0).toUpperCase() + item.category.slice(1) == groceryCategories[index])}
+                                 itemChecked={groceryItemCheckeded}/>
+            )}
 
         </View>
     </ScrollView>
-
-    //
-    //   <ScrollView
-    //     style={[styles.scrollView, { backgroundColor: theme.background }]}
-    //     contentInset={insets}
-    //     contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
-    //     <ThemedView style={styles.container}>
-    //       <ThemedView style={styles.titleContainer}>
-    //         <ThemedText type="subtitle">Explore</ThemedText>
-    //         <ThemedText style={styles.centerText} themeColour="textSecondary">
-    //           This starter app includes example{'\n'}code to help you get started.
-    //         </ThemedText>
-    //
-    //         <ExternalLink href="https://docs.expo.dev" asChild>
-    //           <Pressable style={({ pressed }) => pressed && styles.pressed}>
-    //             <ThemedView  style={styles.linkButton}>
-    //               <ThemedText type="link">Expo documentation</ThemedText>
-    //               <SymbolView
-    //                 tintColor={theme.text}
-    //                 name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
-    //                 size={12}
-    //               />
-    //             </ThemedView>
-    //           </Pressable>
-    //         </ExternalLink>
-    //       </ThemedView>
-    //
-    //       <ThemedView style={styles.sectionsWrapper}>
-    //         <Collapsible title="File-based routing">
-    //           <ThemedText type="small">
-    //             This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
-    //             <ThemedText type="code">src/app/explore.tsx</ThemedText>
-    //           </ThemedText>
-    //           <ThemedText type="small">
-    //             The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-    //             the tab navigator.
-    //           </ThemedText>
-    //           <ExternalLink href="https://docs.expo.dev/router/introduction">
-    //             <ThemedText type="linkPrimary">Learn more</ThemedText>
-    //           </ExternalLink>
-    //         </Collapsible>
-    //
-    //         <Collapsible title="Android, iOS, and web support">
-    //           <ThemedView style={styles.collapsibleContent}>
-    //             <ThemedText type="small">
-    //               You can open this project on Android, iOS, and the web. To open the web version,
-    //               press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-    //               project.
-    //             </ThemedText>
-    //             <Image
-    //               source={require('@/assets/images/tutorial-web.png')}
-    //               style={styles.imageTutorial}
-    //             />
-    //           </ThemedView>
-    //         </Collapsible>
-    //
-    //         <Collapsible title="Images">
-    //           <ThemedText type="small">
-    //             For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-    //             <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-    //             screen densities.
-    //           </ThemedText>
-    //           <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
-    //           <ExternalLink href="https://reactnative.dev/docs/images">
-    //             <ThemedText type="linkPrimary">Learn more</ThemedText>
-    //           </ExternalLink>
-    //         </Collapsible>
-    //
-    //         <Collapsible title="Light and dark mode components">
-    //           <ThemedText type="small">
-    //             This template has light and dark mode support. The{' '}
-    //             <ThemedText type="code">useColourScheme()</ThemedText> hook lets you inspect what the
-    //             user&apos;s current colour scheme is, and so you can adjust UI colours accordingly.
-    //           </ThemedText>
-    //           <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-    //             <ThemedText type="linkPrimary">Learn more</ThemedText>
-    //           </ExternalLink>
-    //         </Collapsible>
-    //
-    //         <Collapsible title="Animations">
-    //           <ThemedText type="small">
-    //             This template includes an example of an animated component. The{' '}
-    //             <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-    //             the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-    //             animate opening this hint.
-    //           </ThemedText>
-    //         </Collapsible>
-    //       </ThemedView>
-    //       {Platform.OS === 'web' && <WebBadge />}
-    //     </ThemedView>
-    //   </ScrollView>
-    // );
 }
 
 const styles = StyleSheet.create({
