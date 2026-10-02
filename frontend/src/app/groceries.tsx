@@ -6,6 +6,7 @@ import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
 import {useState} from "react";
+import {addGroceryItem, AddGroceryItemRequest} from "@/api/backendApi";
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
@@ -59,8 +60,8 @@ export default function TabTwoScreen() {
         setNewItemCategory('');
         setNewItemNote('');
     }
-
-    function saveNewItem() {
+        //TODO: swipe left to delete grocery item (cofnrim)
+    async function saveNewItem() {
         const name = newItemName.trim();
         const category = newItemCategory.trim().toLowerCase();
         if (!name || !category) return;
@@ -73,7 +74,16 @@ export default function TabTwoScreen() {
             subtext: newItemNote.trim()
         }]);
         closeAddItem();
-        //TODO: now connect to database + backend
+        const newItem: AddGroceryItemRequest = {
+            name: name,
+            quantity: null, // TODO
+            unit: null,  // TODO
+            category: category,
+            note: null,  // TODO
+            checked: false
+        }
+        await addGroceryItem(newItem)
+        //read response?
     }
 
     //TODO: maybe: divider and below it, next week's list ?
