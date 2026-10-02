@@ -121,7 +121,6 @@ export default function TabTwoScreen() {
                     <View style={[styles.popup, {
                         backgroundColor: colours.background,
                         borderColor: colours.greenhighlightSecondary,
-                        paddingBottom: Spacing.five
                     }]}>
                         <View style={[styles.sheetHandle, {backgroundColor: colours.greenhighlightSecondary}]}/>
                         <View style={styles.popupHeader}>
@@ -284,10 +283,12 @@ const styles = StyleSheet.create({
     },
     popup: {
         width: '100%',
-        maxHeight: '85%',
+        maxHeight: '160%',
         borderTopLeftRadius: 26,
         borderTopRightRadius: 26,
         borderWidth: 1,
+        paddingBottom: 480,
+        marginBottom: -460,
         paddingHorizontal: Spacing.five,
         paddingTop: Spacing.two,
     },
