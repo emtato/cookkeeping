@@ -11,3 +11,5 @@ public class Main {
         SpringApplication.run(Main.class, args);
     } //    mvn -f backend/pom.xml spring-boot:run
 }
+
+//tomcat -> dispatcherservlet handles http requests and delegates them to controllers
