@@ -20,7 +20,5 @@ export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void>
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(item),
     });
-    // TODO: Build the full URL to POST /api/groceries/add on the running backend.
-    // TODO: Call fetch with method POST and a JSON body made from _item.
-    // TODO: Check the HTTP response before reporting success to the screen.
 }
+

@@ -18,11 +18,14 @@ import java.io.*;
 @RestController
 public class GroceryListController {
 
-    @PostMapping("/api/groceries/add") //allow dispatcher to map to this. since
+    @PostMapping("/api/groceries/add") //allow dispatcher to map to this
     public void addGroceryItem(@RequestBody AddGroceryItemRequest request) {
-        System.out.println(request.name());
+        System.out.println("add" + request.name());
+    }
 
-
+    @PostMapping("/api/groceries/delete")
+    public void deleteGroceryItem(@RequestBody AddGroceryItemRequest request) {
+        System.out.println("delete" + request.name());
     }
 
 }
