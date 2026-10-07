@@ -55,7 +55,7 @@ export default function TabTwoScreen() {
     }
 
     function closeAddItem() {
-        setAddIsOpen(false);
+        setAddIsOpen(false); // add item view doesnt work for desktop: TODO, need hover state (cursor pointer) and add item view itself
         setNewItemName('');
         setNewItemCategory('');
         setNewItemNote('');

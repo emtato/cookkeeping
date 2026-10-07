@@ -31,7 +31,7 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
                            {borderTopColor: colours.background}, //always aplpy background colour
                            index > 0 && styles.divider, // add top divider if not first one
                            pressed && styles.pressed]}>
-                <SymbolView name={item.checked ? 'checkmark.circle.fill' : 'circle'}
+                <SymbolView name={item.checked ? 'checkmark.circle.fill' : 'circle' /*TODO btw this doesnt work on desktop */}
                             tintColor={colours.greenhighlight} size={28} style={styles.checkbox}/>
                 <View style={styles.itemText}>
                     <ThemedText style={[
