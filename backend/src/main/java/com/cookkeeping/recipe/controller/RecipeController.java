@@ -1,4 +1,4 @@
-package com.cookkeeping.controllers;
+package com.cookkeeping.recipe.controller;
 /**
  * Created by Emilia on 2026-10-02!
  * Description:
