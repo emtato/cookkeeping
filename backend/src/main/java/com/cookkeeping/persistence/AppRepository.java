@@ -1,16 +1,16 @@
-package com.cookkeeping.grocery.repository;
+package com.cookkeeping.persistence;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class GroceryRepository {
+public class AppRepository {
 
     private final JdbcClient jdbcClient;
 
-    public GroceryRepository(JdbcClient jdbcClient) {
+    public AppRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
-    // Add grocery-item SQL methods once the table schema is defined.
+    // Add grocery, recipe, and meal-plan SQL methods as their tables are defined.
 }
