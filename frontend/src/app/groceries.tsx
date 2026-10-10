@@ -6,7 +6,9 @@ import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
 import {useState} from "react";
-import {addGroceryItem, AddGroceryItemRequest} from "@/api/backendApi";
+import {addGroceryItem, AddGroceryItemRequest, deleteGroceryItem} from "@/api/backendApi";
+import {Alert} from 'react-native';
+import {SymbolView} from 'expo-symbols';
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
@@ -60,7 +62,8 @@ export default function TabTwoScreen() {
         setNewItemCategory('');
         setNewItemNote('');
     }
-        //TODO: swipe left to delete grocery item (cofnrim)
+
+    //TODO: swipe left to delete grocery item (cofnrim)
     async function saveNewItem() {
         const name = newItemName.trim();
         const category = newItemCategory.trim().toLowerCase();
@@ -86,6 +89,13 @@ export default function TabTwoScreen() {
         //read response?
     }
 
+    async function deleteItem(selectedItems: GroceryItem[]) {
+        const newItems = items.filter(item => !selectedItems.includes(item)); //temp thing, retrieve from db future
+        setGroceryItems(newItems);
+        await deleteGroceryItem(selectedItems.map(item => item.id))
+    }
+
+
     //TODO: maybe: divider and below it, next week's list ?
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
 
@@ -94,6 +104,23 @@ export default function TabTwoScreen() {
             <View style={styles.header}>
                 <View style={styles.titleRow}>
                     <ThemedText type="title" style={styles.title}>This week</ThemedText>
+                    <Pressable onPress={() => { //delete items + only display
+                        const checkedItems = items.filter(item => item.checked);
+                        if (checkedItems.length > 0) {
+                            Alert.alert(checkedItems.length > 1 ? 'Delete items?' : 'Delete item?', 'This cannot be undone.', [
+                                {text: 'Cancel', style: 'cancel'},
+                                {text: 'Delete', style: 'destructive', onPress: () => deleteItem(checkedItems)}
+                            ])
+                        } else {
+                            Alert.alert('No items selected', 'Select items to delete.', [
+                                {text: 'OK', style: 'cancel'}
+                            ])
+                        }
+                    }} style={({pressed}) => [
+                        styles.deleteButton, {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}
+                               accessibilityRole="button" accessibilityLabel="Delete checked items">
+                        <SymbolView name="trash" tintColor={'#aa4444'} size={22}/>
+                    </Pressable>
                     <Pressable onPress={() => setAddIsOpen(true)}
                                style={({pressed}) => [
                                    styles.addButton, {backgroundColor: colours.greenhighlight}, pressed && styles.pressed]}>
@@ -239,6 +266,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: Spacing.three,
+    },
+    deleteButton: {
+        width: 44,
+        minHeight: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Spacing.three,
+        marginRight: -Spacing.seven,
     },
     addButtonText: {
         fontSize: 14,

@@ -1,5 +1,7 @@
 // HTTP calls to backend
 
+import {GroceryItem} from "@/types/groceryItem";
+
 const backendUrl = process.env.EXPO_PUBLIC_API_URL;
 
 
@@ -14,6 +16,8 @@ export type AddGroceryItemRequest = {
 
 //add more types when more flows are implemented
 
+//should we return something useful like http status? probably (later)
+
 export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void> {
     const response = await fetch(`${backendUrl}/api/groceries/add`, {
         method: 'POST',
@@ -22,3 +26,11 @@ export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void>
     });
 }
 
+export async function getGroceries(): Promise<GroceryItem[]> {
+
+    return []
+}
+
+export async function deleteGroceryItem(itemIDs: string[]): Promise<void> {
+
+}
