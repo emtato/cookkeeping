@@ -6,7 +6,7 @@ import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
 import {useState} from "react";
-import {addGroceryItem, AddGroceryItemRequest, deleteGroceryItem} from "@/api/backendApi";
+import {addGroceryItem, AddGroceryItemRequest, deleteGroceryItem, updateGroceryItem} from "@/api/backendApi";
 import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
 
@@ -45,7 +45,7 @@ export default function TabTwoScreen() {
     let progress = 0;
     if (items.length > 0) progress = (boughtCount / items.length) * 100;
 
-    function groceryItemCheckeded(item: GroceryItem) {
+    async function groceryItemCheckeded(item: GroceryItem) {
         let newList: GroceryItem[] = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].id == item.id) {
@@ -54,6 +54,14 @@ export default function TabTwoScreen() {
             newList.push(items[i]);
         }
         setGroceryItems(newList);
+        const checkedItem: GroceryItem = {
+            id: item.id,
+            name: item.name,
+            checked: !item.checked,
+            category: item.category,
+            subtext: item.subtext
+        }
+        await updateGroceryItem(checkedItem)
     }
 
     function closeAddItem() {
@@ -108,12 +116,12 @@ export default function TabTwoScreen() {
                         const checkedItems = items.filter(item => item.checked);
                         if (checkedItems.length > 0) {
                             Alert.alert(checkedItems.length > 1 ? 'Delete items?' : 'Delete item?', 'This cannot be undone.', [
-                                {text: 'Cancel', style: 'cancel'},
-                                {text: 'Delete', style: 'destructive', onPress: () => deleteItem(checkedItems)}
+                                {text: 'nononono', style: 'cancel'},
+                                {text: 'byebye!', style: 'destructive', onPress: () => deleteItem(checkedItems)}
                             ])
                         } else {
                             Alert.alert('No items selected', 'Select items to delete.', [
-                                {text: 'OK', style: 'cancel'}
+                                {text: 'Okay :>', style: 'cancel'}
                             ])
                         }
                     }} style={({pressed}) => [

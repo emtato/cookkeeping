@@ -34,3 +34,7 @@ export async function getGroceries(): Promise<GroceryItem[]> {
 export async function deleteGroceryItem(itemIDs: string[]): Promise<void> {
 
 }
+
+export async function updateGroceryItem(item: GroceryItem): Promise<void> {
+
+}

@@ -86,6 +86,7 @@ export default function HomeScreen() {
         {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
         {id: '6', name: 'bagle', checked: true, category: 'other food', subtext: 'asdasdv'},
         {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
+    //make every item clickable to toggle checked + sync with db
     const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList); //make sure is empty list if no meals
     const remainingItems = items.filter(item => !item.checked);
     const boughtCount = items.length - remainingItems.length;
