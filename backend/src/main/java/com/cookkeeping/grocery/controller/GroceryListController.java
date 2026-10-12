@@ -1,6 +1,7 @@
 package com.cookkeeping.grocery.controller;
 
 import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
+import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,11 @@ public class GroceryListController {
     public void addGroceryItem(@RequestBody AddGroceryItemRequest request) {
         System.out.println("add" + request.name());
         groceryService.addGroceryItem(request);
+    }
+
+    @PostMapping("/api/groceries/update")
+    public void updateGroceryItem(@RequestBody UpdateGroceryItemRequest request) {
+        groceryService.updateGroceryItem(request);
     }
 
     @PostMapping("/api/groceries/delete")
