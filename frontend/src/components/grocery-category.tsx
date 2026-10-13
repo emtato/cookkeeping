@@ -10,6 +10,7 @@ interface GroceryCategoryProps {
     sectionItems: GroceryItem[],
     itemChecked: (item: GroceryItem) => void
 }
+//TODO: add amounts to each ingredient/item
 
 export default function GroceryCategory({sectionTitle, sectionItems, itemChecked}: GroceryCategoryProps) {
     const scheme = useColourScheme();

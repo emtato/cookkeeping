@@ -14,6 +14,18 @@ export type AddGroceryItemRequest = {
     checked: boolean;
 };
 
+export type UpdateGroceryItemRequest = {
+    id: number;
+    name: string;
+    quantity: number | null;
+    unit: string | null;
+    category: string;
+    note: string | null;
+    checked: boolean;
+    startDate: string | null;
+    endDate: string | null;
+};
+
 //add more types when more flows are implemented
 
 //should we return something useful like http status? probably (later)

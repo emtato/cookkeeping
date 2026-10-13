@@ -1,6 +1,6 @@
 package com.cookkeeping.grocery.dto;
-
 import java.time.LocalDate;
+
 /**
  * Created by Emilia on 2026-10-02!
  * Description:
@@ -15,6 +15,5 @@ public record AddGroceryItemRequest(
         String category,
         String note,
         boolean checked,
-        LocalDate startDate,
-        LocalDate endDate) {
+        LocalDate [] needDate) {
 }

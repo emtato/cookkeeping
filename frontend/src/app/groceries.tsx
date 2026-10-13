@@ -6,7 +6,7 @@ import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
 import {useState} from "react";
-import {addGroceryItem, AddGroceryItemRequest, deleteGroceryItem, updateGroceryItem} from "@/api/backendApi";
+import {addGroceryItem, AddGroceryItemRequest, UpdateGroceryItemRequest, deleteGroceryItem, updateGroceryItem} from "@/api/backendApi";
 import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
 
