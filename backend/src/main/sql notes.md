@@ -160,6 +160,7 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 - String note,
 - boolean checked
 - LocalDate[] needDate
+- List<Meal> needMeals
   (copied directly from the grocery DTO)
 
 ### 

@@ -4,6 +4,20 @@ import {GroceryItem} from "@/types/groceryItem";
 
 const backendUrl = process.env.EXPO_PUBLIC_API_URL;
 
+export type MealIngredient = {
+    name: string;
+    quantity: number | null;
+    unit: string | null;
+};
+
+export type Meal = {
+    id: number;
+    recipeId: number;
+    name: string;
+    plannedDate: string;
+    ingredients: MealIngredient[];
+};
+
 
 export type AddGroceryItemRequest = {
     name: string;
@@ -12,6 +26,8 @@ export type AddGroceryItemRequest = {
     category: string;
     note: string | null;
     checked: boolean;
+    needDate: string[];
+    needMeals: Meal[];
 };
 
 export type UpdateGroceryItemRequest = {
@@ -22,8 +38,7 @@ export type UpdateGroceryItemRequest = {
     category: string;
     note: string | null;
     checked: boolean;
-    startDate: string | null;
-    endDate: string | null;
+    needDate: string[];
 };
 
 //add more types when more flows are implemented

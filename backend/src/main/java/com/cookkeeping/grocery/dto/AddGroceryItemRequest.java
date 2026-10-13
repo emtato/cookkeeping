@@ -1,5 +1,7 @@
 package com.cookkeeping.grocery.dto;
+import com.cookkeeping.mealplan.dto.Meal;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Created by Emilia on 2026-10-02!
@@ -15,5 +17,6 @@ public record AddGroceryItemRequest(
         String category,
         String note,
         boolean checked,
-        LocalDate [] needDate) {
+        LocalDate [] needDate,
+        List<Meal> needMeals) {
 }
