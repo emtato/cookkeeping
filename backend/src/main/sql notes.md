@@ -162,6 +162,9 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 - LocalDate[] needDate
   (copied directly from the grocery DTO)
 
+```sh 
+/opt/homebrew/opt/postgresql@17/bin/psql -d cookkeeping -v ON_ERROR_STOP=1 -f backend/src/main/resources/db/migration/V1__create_grocery_items.sql
+```
 ### 
 
 
