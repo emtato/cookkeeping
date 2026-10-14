@@ -160,7 +160,16 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 - String note,
 - boolean checked
 - LocalDate[] needDate
-- List<Meal> needMeals
   (copied directly from the grocery DTO)
 
 ### 
+
+
+
+
+
+
+# data logic
+1. Find planned meals due soon. The due date belongs to the planned meal.
+2. Follow each meal’s ingredient connections. Those connections already tell you which ingredient came from which meal, so you don’t need a second loop to deduce it by name.
+3. Combine matching ingredients where their units are compatible, add relevant manually entered grocery items, then group the result by category for display.

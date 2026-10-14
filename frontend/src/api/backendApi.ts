@@ -27,7 +27,6 @@ export type AddGroceryItemRequest = {
     note: string | null;
     checked: boolean;
     needDate: string[];
-    needMeals: Meal[];
 };
 
 export type UpdateGroceryItemRequest = {

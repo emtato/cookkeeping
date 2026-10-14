@@ -92,8 +92,7 @@ export default function TabTwoScreen() {
             category: category,
             note: null,  // TODO
             checked: false,
-            needDate: [], // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
-            needMeals: []
+            needDate: [] // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
         }
         await addGroceryItem(newItem)
         //read response?
