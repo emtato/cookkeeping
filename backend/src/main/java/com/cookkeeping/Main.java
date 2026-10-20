@@ -13,3 +13,4 @@ public class Main {
 }
 
 //tomcat -> dispatcherservlet handles http requests and delegates them to controllers
+//with run config set up (db url + username env var), spring auto connects to it
