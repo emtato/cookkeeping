@@ -1,12 +1,14 @@
 package com.cookkeeping.grocery.controller;
 
 import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
+import com.cookkeeping.grocery.dto.GroceryItem;
 import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.cookkeeping.grocery.service.GroceryService;
 
@@ -34,6 +36,7 @@ public class GroceryListController {
 
     @PostMapping("/api/groceries/update")
     public void updateGroceryItem(@RequestBody UpdateGroceryItemRequest request) {
+        System.out.println("update" + request.name());
         groceryService.updateGroceryItem(request);
     }
 
@@ -44,8 +47,8 @@ public class GroceryListController {
     }
 
     @PostMapping("/api/groceries/get")
-    public void getGroceryItems(LocalDate startDate, LocalDate endDate) {
+    public List<GroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
         System.out.println("get" + startDate.toString() + " to " + endDate.toString());
-        groceryService.getGroceryItems(startDate, endDate);
+        return groceryService.getGroceryItems(startDate, endDate);
     }
 }
