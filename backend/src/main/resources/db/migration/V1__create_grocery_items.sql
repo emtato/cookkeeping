@@ -1,10 +1,15 @@
 CREATE TABLE grocery_items (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL,
-    quantity INTEGER,
+    quantity INTEGER[] NOT NULL DEFAULT '{}'::INTEGER[],
     unit TEXT,
+    planned_meal_id INTEGER[] NOT NULL DEFAULT '{}'::INTEGER[],
     category TEXT NOT NULL,
     note TEXT,
     checked BOOLEAN NOT NULL DEFAULT FALSE,
-    need_date DATE[] NOT NULL DEFAULT '{}'::DATE[]
+    need_date DATE[] NOT NULL DEFAULT '{}'::DATE[],
+    CONSTRAINT matching_need_lengths CHECK (
+        cardinality(quantity) = cardinality(need_date)
+        AND cardinality(planned_meal_id) = cardinality(need_date)
+    )
 );
