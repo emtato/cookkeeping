@@ -35,7 +35,7 @@ public class GroceryService {
     }
 
     public List<GroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
-        return appRepository.getGroceryItems(LocalDate startDate, LocalDate endDate);
+        return appRepository.getGroceryItems(startDate, endDate);
     }
 
 

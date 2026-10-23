@@ -13,9 +13,10 @@ import java.time.LocalDate;
 public record GroceryItem(
         Integer id,
         String name,
-        Integer quantity,
+        Integer[] quantity,
         String unit,
         String category,
+        Integer[] needMealIDs,
         String note,
         boolean checked,
         LocalDate[] needDate) {

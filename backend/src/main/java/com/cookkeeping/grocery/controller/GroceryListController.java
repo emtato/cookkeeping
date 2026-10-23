@@ -30,25 +30,25 @@ public class GroceryListController {
 
     @PostMapping("/api/groceries/add") //allow dispatcher to map to this
     public void addGroceryItem(@RequestBody AddGroceryItemRequest request) {
-        System.out.println("add" + request.name());
+        System.out.println("add " + request.name());
         groceryService.addGroceryItem(request);
     }
 
     @PostMapping("/api/groceries/update")
     public void updateGroceryItem(@RequestBody UpdateGroceryItemRequest request) {
-        System.out.println("update" + request.name());
+        System.out.println("update " + request.name());
         groceryService.updateGroceryItem(request);
     }
 
     @PostMapping("/api/groceries/delete")
     public void deleteGroceryItem(int id) {
-        System.out.println("delete" + id);
+        System.out.println("delete " + id);
         groceryService.deleteGroceryItem(id);
     }
 
     @PostMapping("/api/groceries/get")
     public List<GroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
-        System.out.println("get" + startDate.toString() + " to " + endDate.toString());
+        System.out.println("get groceries from " + startDate.toString() + " to " + endDate.toString());
         return groceryService.getGroceryItems(startDate, endDate);
     }
 }
