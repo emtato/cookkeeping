@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 
 // returned grocery items  from db
-public record GroceryItem(
+public record DisplayGroceryItem(
         Integer id,
         String name,
         Integer[] quantity,
@@ -19,5 +19,7 @@ public record GroceryItem(
         Integer[] needMealIDs,
         String note,
         boolean checked,
-        LocalDate[] needDate) {
+        LocalDate[] needDate,
+        Integer displayQuantity,
+        Integer[] displayNeedMeals) {
 }

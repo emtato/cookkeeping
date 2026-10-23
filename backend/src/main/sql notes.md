@@ -160,19 +160,21 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 - String name,
 - Integer[] quantity,
 - String unit,
-- Integer[] planned_meal_id (null for a need not tied to a planned meal),
+- Integer[] "needMealIDs" (null for a need not tied to a planned meal),
 - String category,
 - String note,
 - boolean checked
 - LocalDate[] needDate
   (the arrays use matching indexes: each date has its own quantity and planned meal ID)
 
-needDate, quantity and planned_meal_id are parallel; each index corresponds to the same need. They are ordered by insertion, not by date. One unit applies to all quantities for the grocery item.
+needDate, quantity and "needMealIDs" are parallel; each index corresponds to the same need. They are ordered by insertion, not by date. One unit applies to all quantities for the grocery item.
 
 run the script that creates this table: 
 ```sh 
 /opt/homebrew/opt/postgresql@17/bin/psql -d cookkeeping -v ON_ERROR_STOP=1 -f backend/src/main/resources/db/migration/V1__create_grocery_items.sql
 ```
+
+If the table already exists, run `V2__rename_grocery_meal_ids.sql` instead to rename its existing column. PostgreSQL needs the double quotes around `"needMealIDs"` to preserve the capital letters.
 ### 
 
 

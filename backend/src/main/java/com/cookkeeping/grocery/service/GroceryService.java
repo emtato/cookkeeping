@@ -1,7 +1,7 @@
 package com.cookkeeping.grocery.service;
 
 import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
-import com.cookkeeping.grocery.dto.GroceryItem;
+import com.cookkeeping.grocery.dto.DisplayGroceryItem;
 import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
 import com.cookkeeping.persistence.AppRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class GroceryService {
         appRepository.deleteGroceryItem(id);
     }
 
-    public List<GroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
+    public List<DisplayGroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
         return appRepository.getGroceryItems(startDate, endDate);
     }
 

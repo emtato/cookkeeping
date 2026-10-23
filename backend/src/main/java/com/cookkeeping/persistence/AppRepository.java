@@ -1,7 +1,7 @@
 package com.cookkeeping.persistence;
 
 import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
-import com.cookkeeping.grocery.dto.GroceryItem;
+import com.cookkeeping.grocery.dto.DisplayGroceryItem;
 import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.SqlArrayValue;
@@ -60,7 +60,7 @@ public class AppRepository {
                 WHERE id = :id;""").param("id", id).update();
     }
 
-    public List<GroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
+    public List<DisplayGroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
         //IMPORTANT LOGIC DECISION,  TODO to potentially change later
         /*
            currently, need date stored in db is an array of dates: which dates need this ingredient. for now, we will assume
@@ -72,39 +72,41 @@ public class AppRepository {
            manually added / recipe added thing should be aggregated to be bought all together at once.
         */
 
-        ArrayList<GroceryItem> dbGroceriesResult;
+        ArrayList<DisplayGroceryItem> dbGroceriesResult;
         /*
         unnest(need_date) turns the array into individual date rows
         EXISTS is true if at least one of those rows passes the test.
         */
-        dbGroceriesResult = (ArrayList<GroceryItem>) jdbcClient.sql("""
-                  SELECT * FROM grocery_items
+        dbGroceriesResult = (ArrayList<DisplayGroceryItem>) jdbcClient.sql("""
+                  SELECT grocery_items.*,
+                         NULL::integer AS displayquantity,
+                         NULL::integer[] AS displayneedmeals
+                  FROM grocery_items
                   WHERE EXISTS (
                       SELECT 1
                       FROM unnest(need_date) AS dates(needed_day)
                       WHERE needed_day BETWEEN :startDate AND :endDate.plusWeeks(1))
-                """).query(GroceryItem.class).list();
+                """).query(DisplayGroceryItem.class).list();
         System.out.println("got grocery items");
 
         for (int i = 0; i < dbGroceriesResult.size(); i++) { // implement the rule stated above
-            GroceryItem item = dbGroceriesResult.get(i);
+            DisplayGroceryItem item = dbGroceriesResult.get(i);
 
-            int newQuantity = 0; // sum quantity only for items within now - next 2 weeks. from here on, each grocery item will
-            // only have a INT field for quantity, since we now simplified the list into the actual quantity needed for next 2 weeks
-            ArrayList<Integer> needMealIDs = new ArrayList<>(); //remains a list so the ingred can show in the details what meals req this ingred
-
+            int displayQuantity = 0;  // sum quantity only for items within now - next 2 week
+            ArrayList<Integer> displayNeedMeals = new ArrayList<>();
             if (item.needDate().length > 0) {
                 LocalDate[] needDates = item.needDate();
                 for (int j = 0; j < needDates.length; j++) {
                     LocalDate date = needDates[j];
                     if (date.isAfter(startDate) && date.isBefore(endDate.plusWeeks(1))) { // i think startDate and endDate will be now- 7days later? so for 2 weeks = endDate+7. for now, keeping startDate and EndDate structure so it can be variabl and modified
                         //within desired 2 week range. add quantity
-                        newQuantity += item.quantity()[j];
-                        needMealIDs.add(item.needMealIDs()[j]);
+                        displayQuantity += item.quantity()[j];
+                        Integer mealID = item.needMealIDs()[j];
+                        if (mealID != null) displayNeedMeals.add(mealID);
                     }
                 }
             }
-            dbGroceriesResult.set(i, new GroceryItem(item.id(), item.name(), newQuantity, item.unit(), item.category(), needMealIDs.toArray(new String[0]), item.note(), item.checked(), item.needDate())); //update the entry to fit new quantity reqs and needmeals
+            dbGroceriesResult.set(i, new DisplayGroceryItem(item.id(), item.name(), item.quantity(), item.unit(), item.category(), item.needMealIDs(), item.note(), item.checked(), item.needDate(), displayQuantity, displayNeedMeals.toArray(new Integer[0])));
         }
         return dbGroceriesResult;
     }
