@@ -164,7 +164,7 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 - String category,
 - String note,
 - boolean checked
-- LocalDate[] needDate
+- LocalDate[] need_date
   (the arrays use matching indexes: each date has its own quantity and planned meal ID)
 
 needDate, quantity and "needMealIDs" are parallel; each index corresponds to the same need. They are ordered by insertion, not by date. One unit applies to all quantities for the grocery item.

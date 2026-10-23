@@ -77,6 +77,9 @@ public class AppRepository {
         unnest(need_date) turns the array into individual date rows
         EXISTS is true if at least one of those rows passes the test.
         */
+        // a null needDate is just a "key" that tells the backend this is a special user gen entry
+        // quantity and needMealIDs still have an entry in the same spot so the arrays keep up with each other
+        // user gen entries stay on the list until the user checks them off
         dbGroceriesResult = (ArrayList<DisplayGroceryItem>) jdbcClient.sql("""
                   SELECT grocery_items.*,
                          NULL::integer AS displayquantity,
@@ -84,9 +87,10 @@ public class AppRepository {
                   FROM grocery_items
                   WHERE EXISTS (
                       SELECT 1
-                      FROM unnest(need_date) AS dates(needed_day)
-                      WHERE needed_day BETWEEN :startDate AND :endDate.plusWeeks(1))
-                """).query(DisplayGroceryItem.class).list();
+                      FROM unnest(need_date) AS dates(needed_day)/* unnest takes all elements in need_date column and makes them individual rows, gives temp table name "dates" and "needed_day" column name */
+                      WHERE (needed_day IS NULL) /* PATH 1: user gen item, accept. right now this accepts all checked items. eventually those need to be auto deleted after some time */
+                         OR needed_day BETWEEN :startDate AND :endDate) /* PATH 2: grocery items with due date */
+                """).param("startDate", startDate).param("endDate", endDate).query(DisplayGroceryItem.class).list();
         System.out.println("got grocery items");
 
         for (int i = 0; i < dbGroceriesResult.size(); i++) { // implement the rule stated above
@@ -98,9 +102,10 @@ public class AppRepository {
                 LocalDate[] needDates = item.needDate();
                 for (int j = 0; j < needDates.length; j++) {
                     LocalDate date = needDates[j];
-                    if (date.isAfter(startDate) && date.isBefore(endDate.plusWeeks(1))) { // i think startDate and endDate will be now- 7days later? so for 2 weeks = endDate+7. for now, keeping startDate and EndDate structure so it can be variabl and modified
+                    boolean inDateRange = date != null && date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusWeeks(1).plusDays(1)); // i think startDate and endDate will be now- 7days later? so for 2 weeks = endDate+7. for now, keeping startDate and EndDate structure so it can be variabl and modified. also sql is inclusive, java is exclusive so
+                    if ((date == null && !item.checked()) || inDateRange) {
                         //within desired 2 week range. add quantity
-                        displayQuantity += item.quantity()[j];
+                        if (item.quantity()[j] != null) displayQuantity += item.quantity()[j];
                         Integer mealID = item.needMealIDs()[j];
                         if (mealID != null) displayNeedMeals.add(mealID);
                     }
