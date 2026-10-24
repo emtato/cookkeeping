@@ -19,6 +19,5 @@ public record AddGroceryItemRequest(
         String category,
         String note,
         boolean checked,
-        LocalDate[] needDate,
-        Integer[] needMealIDs) {
+        LocalDate[] needDate) {
 }

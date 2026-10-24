@@ -25,8 +25,8 @@ export type Meal = {
 // A date the user does provide can be used to show urgency on the homescreen as it gets closer.
 export type AddGroceryItemRequest = {
     name: string;
-    quantity: number | null;
-    unit: string | null;
+    quantity: number[];
+    unit: string;
     category: string;
     note: string | null;
     checked: boolean;
@@ -36,12 +36,11 @@ export type AddGroceryItemRequest = {
 export type UpdateGroceryItemRequest = {
     id: number;
     name: string;
-    quantity: number | null;
-    unit: string | null;
+    quantity: number; //manual quantity added. quantities required by meals uneditable
+    unit: string; //unit should be changeable, but important: if unit is changed, quantity should be updated to match, not done yet.
     category: string;
     note: string | null;
     checked: boolean;
-    needDate: string[];
 };
 
 //add more types when more flows are implemented
@@ -56,15 +55,25 @@ export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void>
     });
 }
 
-export async function getGroceries(): Promise<GroceryItem[]> {
-
-    return []
+export async function updateGroceryItem(item: GroceryItem): Promise<void> {
+    const response = await fetch(`${backendUrl}/api/groceries/update`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(item),
+    })
 }
 
 export async function deleteGroceryItem(itemIDs: string[]): Promise<void> {
+    const response = await fetch(`${backendUrl}/api/groceries/delete`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(itemIDs),
+    });
 
 }
 
-export async function updateGroceryItem(item: GroceryItem): Promise<void> {
-
+//should be called upon first open grocery / every save/update
+export async function getGroceries(): Promise<GroceryItem[]> {
+    const response = await fetch(`${backendUrl}/api/groceries/get`);
+    return await response.json();
 }
