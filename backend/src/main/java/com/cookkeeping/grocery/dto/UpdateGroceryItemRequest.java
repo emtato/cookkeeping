@@ -9,6 +9,9 @@ package com.cookkeeping.grocery.dto;
 public record UpdateGroceryItemRequest(
         Integer id,
         String name,
+        // two fields in ui: planned meals amount is uneditable; this user-added amount is editable
+        // null means the user did not change the amount
         Integer manualQuantity,
+        boolean checked,
         String category) {
 }

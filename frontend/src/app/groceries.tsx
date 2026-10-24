@@ -49,6 +49,9 @@ export default function TabTwoScreen() {
     // and the user-added amount (editable). The total is their sum, so the user can see why
     // it can't go below the planned amount instead of seeing an unexplained minimum like 415 g.
     // Flag a negative user-added amount immediately and send only that amount for update.
+    // TODO: Send UpdateGroceryItemRequest both when the user opens an item, changes its fields,
+    // and presses Save, and when they check it off without opening it. For a check, keep the
+    // current name, category, and manual quantity and change only checked.
     async function groceryItemCheckeded(item: GroceryItem) {
         let newList: GroceryItem[] = [];
         for (let i = 0; i < items.length; i++) {

@@ -57,25 +57,40 @@ public class AppRepository {
     }
 
     public void updateGroceryItem(UpdateGroceryItemRequest request) {
-        // TODO: This assumes zero or one user-generated need (null meal ID) per grocery row.
-        // If there can be several, we need a way to choose or combine them instead of using the first
-        //attempt to update existing entry with needmealID = null
+        // A null manualQuantity means this update only changes the item details (name, category, checked)
+        // Leave all three need arrays alone, whether or not a user-generated need exists.
+        if (request.manualQuantity() == null) {
+            jdbcClient.sql("""
+                    UPDATE grocery_items
+                    SET name = :name, category = :category, checked = :checked
+                    WHERE id = :id
+                    """)
+                    .param("id", request.id())
+                    .param("name", request.name())
+                    .param("category", request.category())
+                    .param("checked", request.checked())
+                    .update();
+            return;
+        }
+
+        // TODO: This assumes zero or one user-generated need (null meal ID) per grocery row. If there can be several, we need a way to choose or combine them instead of using the first
+        //attempt to update existing entry (already exists) with needmealID = null
         int updated = jdbcClient.sql("""
                 UPDATE grocery_items
-                SET name = :name, category = :category,
-                    quantity[array_position("needMealIDs", NULL::integer)] = :manualQuantity
+                SET name = :name, category = :category, checked = :checked, quantity[array_position("needMealIDs", NULL::integer)] = :manualQuantity
                 WHERE id = :id AND array_position("needMealIDs", NULL::integer) IS NOT NULL
                 """)
                 .param("id", request.id())
                 .param("name", request.name())
                 .param("category", request.category())
+                .param("checked", request.checked())
                 .param("manualQuantity", request.manualQuantity())
                 .update();
         // if no entry with null needmealid found (every single thing that uses this ingredient was from meals, no quantity from user gen at all)
         if (updated == 0) {
             updated = jdbcClient.sql("""
                     UPDATE grocery_items
-                    SET name = :name, category = :category,
+                    SET name = :name, category = :category, checked = :checked,
                         quantity = array_append(quantity, :manualQuantity),
                         need_date = array_append(need_date, NULL::date),
                         "needMealIDs" = array_append("needMealIDs", NULL::integer)
@@ -84,6 +99,7 @@ public class AppRepository {
                     .param("id", request.id())
                     .param("name", request.name())
                     .param("category", request.category())
+                    .param("checked", request.checked())
                     .param("manualQuantity", request.manualQuantity())
                     .update();
         }
@@ -113,9 +129,10 @@ public class AppRepository {
         unnest(need_date) turns the array into individual date rows
         EXISTS is true if at least one of those rows passes the test.
         */
-        // a null needDate is just a "key" that tells the backend this is a special user gen entry
+        // for this search, a null needDate is the "key" for a user gen entry with no due date
         // quantity and needMealIDs still have an entry in the same spot so the arrays keep up with each other
-        // user gen entries stay on the list until the user checks them off
+        // user gen entries with no due date are meant to stay until checked off (cleanup TODO).
+        // if they have a due date, they follow the date window and can disappear from this list.
         dbGroceriesResult = (ArrayList<DisplayGroceryItem>) jdbcClient.sql("""
                   SELECT grocery_items.*,
                          NULL::integer AS displayquantity,
