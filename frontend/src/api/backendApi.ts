@@ -19,6 +19,10 @@ export type Meal = {
 };
 
 
+// TODO: user-added grocery needs should send matching quantity, needDate, and needMealIDs arrays.
+// For a user-added need, put null in its needMealIDs position and in its needDate position
+// if no date was entered. When manually updating an item, keep any existing meal IDs.
+// A date the user does provide can be used to show urgency on the homescreen as it gets closer.
 export type AddGroceryItemRequest = {
     name: string;
     quantity: number | null;

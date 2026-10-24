@@ -11,8 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-//first commit: finalize dto and persistence logic for update and add (addgroceryitemreq, apprepo, displaygrocitem, grocservice, sql noes, updategrocreq)
-// second commit: add comments for random rules and future notes
+
 @Repository
 public class AppRepository {
 

@@ -45,6 +45,10 @@ export default function TabTwoScreen() {
     let progress = 0;
     if (items.length > 0) progress = (boughtCount / items.length) * 100;
 
+    // TODO: When editing an item, show two quantity fields: the planned meal amount (read-only)
+    // and the user-added amount (editable). The total is their sum, so the user can see why
+    // it can't go below the planned amount instead of seeing an unexplained minimum like 415 g.
+    // Flag a negative user-added amount immediately and send only that amount for update.
     async function groceryItemCheckeded(item: GroceryItem) {
         let newList: GroceryItem[] = [];
         for (let i = 0; i < items.length; i++) {
