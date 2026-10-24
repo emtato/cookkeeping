@@ -20,6 +20,9 @@ public record DisplayGroceryItem(
         String note,
         boolean checked,
         LocalDate[] needDate,
+        // This total includes planned meal quantities. The user can change the manual amount,
+        // but cannot decrease the total below what the planned meals need. To change those
+        // quantities, they need to change the ingredients in the planned meals instead.
         Integer displayQuantity,
         Integer[] displayNeedMeals) {
 }

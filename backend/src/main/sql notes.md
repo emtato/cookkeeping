@@ -169,6 +169,8 @@ create reusable sql file with reusable CREATE TABLE statements so its easy to ge
 
 needDate, quantity and "needMealIDs" are parallel; each index corresponds to the same need. They are ordered by insertion, not by date. One unit applies to all quantities for the grocery item.
 
+for now, names should be unique, so theres no confusion. id permits modification of the name safely 
+
 run the script that creates this table: 
 ```sh 
 /opt/homebrew/opt/postgresql@17/bin/psql -d cookkeeping -v ON_ERROR_STOP=1 -f backend/src/main/resources/db/migration/V1__create_grocery_items.sql

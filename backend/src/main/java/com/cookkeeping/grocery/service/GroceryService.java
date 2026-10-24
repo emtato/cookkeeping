@@ -26,6 +26,7 @@ public class GroceryService {
     }
 
     public void updateGroceryItem(UpdateGroceryItemRequest item) {
+        // TODO: Check that manualQuantity is not negative before saving it. This keeps the total from going below what planned meals need; meal quantities and needMealIDs stay unchanged.
         appRepository.updateGroceryItem(item);
     }
 

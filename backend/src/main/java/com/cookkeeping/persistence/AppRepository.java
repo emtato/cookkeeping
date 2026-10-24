@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//first commit: finalize dto and persistence logic for update and add (addgroceryitemreq, apprepo, displaygrocitem, grocservice, sql noes, updategrocreq)
+// second commit: add comments for random rules and future notes
 @Repository
 public class AppRepository {
 
@@ -28,30 +30,65 @@ public class AppRepository {
                 .single();
     }
 
+    //eventually rename these manual paths to indicate ManualAddGroceryItemRequest/manualAddGroceryItem?
+    //also fix the stupid errors on this file
     public void addGroceryItem(AddGroceryItemRequest request) {
-        LocalDate[] needDates = request.needDate() == null ? new LocalDate[0] : request.needDate();
+        if (request.quantity() == null || request.quantity().length != 1) {
+            throw new IllegalArgumentException("A manual grocery add needs one quantity entry");
+        }
+        LocalDate date;
+        if (request.needDate() == null || request.needDate().length == 0)date = null;
+        else date = request.needDate()[0];
+        LocalDate[] needDates = {date};
+        Integer[] needMealIDs = {null};
 
         jdbcClient.sql("""
-                        INSERT INTO grocery_items (name, quantity, unit, category, note, checked, need_date)
-                        VALUES (:name, :quantity, :unit, :category, :note, :checked, :needDate)
+                        INSERT INTO grocery_items (name, quantity, unit, category, note, checked, need_date, "needMealIDs")
+                        VALUES (:name, :quantity, :unit, :category, :note, :checked, :needDate, :needMealIDs)
                         """)// define what input to insert and values, where the variables :name etc are attached by the .param
                 .param("name", request.name())
-                .param("quantity", request.quantity())
+                .param("quantity", new SqlArrayValue("integer", (Object[]) request.quantity()))
                 .param("unit", request.unit())
                 .param("category", request.category())
                 .param("note", request.note())
                 .param("checked", request.checked())
                 .param("needDate", new SqlArrayValue("date", (Object[]) needDates))
+                .param("needMealIDs", new SqlArrayValue("integer", (Object[]) needMealIDs))
                 .update();
     }
 
     public void updateGroceryItem(UpdateGroceryItemRequest request) {
-        LocalDate[] needDates = request.needDate() == null ? new LocalDate[0] : request.needDate();
-
-        jdbcClient.sql("""
+        // TODO: This assumes zero or one user-generated need (null meal ID) per grocery row.
+        // If there can be several, we need a way to choose or combine them instead of using the first
+        //attempt to update existing entry with needmealID = null
+        int updated = jdbcClient.sql("""
                 UPDATE grocery_items
-                SET name = :name, quantity = :quantity, unit = :unit, category = :category, note = :note, checked = :checked, need_date = :needDate
-                WHERE id = :id;""").param("id", request.id()).update();
+                SET name = :name, category = :category,
+                    quantity[array_position("needMealIDs", NULL::integer)] = :manualQuantity
+                WHERE id = :id AND array_position("needMealIDs", NULL::integer) IS NOT NULL
+                """)
+                .param("id", request.id())
+                .param("name", request.name())
+                .param("category", request.category())
+                .param("manualQuantity", request.manualQuantity())
+                .update();
+        // if no entry with null needmealid found (every single thing that uses this ingredient was from meals, no quantity from user gen at all)
+        if (updated == 0) {
+            updated = jdbcClient.sql("""
+                    UPDATE grocery_items
+                    SET name = :name, category = :category,
+                        quantity = array_append(quantity, :manualQuantity),
+                        need_date = array_append(need_date, NULL::date),
+                        "needMealIDs" = array_append("needMealIDs", NULL::integer)
+                    WHERE id = :id AND array_position("needMealIDs", NULL::integer) IS NULL
+                    """)
+                    .param("id", request.id())
+                    .param("name", request.name())
+                    .param("category", request.category())
+                    .param("manualQuantity", request.manualQuantity())
+                    .update();
+        }
+        // TODO: If updated is still 0, no grocery row had this ID (or it changed during the update). Report that instead of saying nun
     }
 
     public void deleteGroceryItem(int id) {
