@@ -33,10 +33,10 @@ export type AddGroceryItemRequest = {
 export type UpdateGroceryItemRequest = {
     id: number;
     name: string;
-    manualQuantity: number; //manual quantity added. quantities required by meals uneditable
-    unit: string; //unit should be changeable, but important: if unit is changed, quantity should be updated to match, not done yet.
+    manualQuantity: number | null; //null leaves the current quantity unchanged
+    unit: string | null; //unit should be changeable, but important: if unit is changed, quantity should be updated to match, not done yet.
     category: string;
-    note: string;
+    note: string | null;
     checked: boolean;
 };
 

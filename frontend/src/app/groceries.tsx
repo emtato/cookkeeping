@@ -19,11 +19,12 @@ import {SymbolView} from 'expo-symbols';
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
-    const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
+    const colours = Colours[scheme === 'dark' ? 'dark' : 'light'];
     const [addIsOpen, setAddIsOpen] = useState(false);
     const [newItemName, setNewItemName] = useState('');
     const [newItemCategory, setNewItemCategory] = useState('');
     const [newItemNote, setNewItemNote] = useState(''); //unused for now
+    const [manualQuantity, setManualQuantity] = useState(0);
     const [items, setGroceryItems] = useState<GroceryItem[]>([
         {id: 1, name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
         {id: 2, name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
@@ -60,20 +61,24 @@ export default function TabTwoScreen() {
     // and presses Save, and when they check it off without opening it. For a check, keep the
     // current name, category, and manual quantity and change only checked.
     async function groceryItemCheckeded(item: GroceryItem) {
+        const nextChecked = !item.checked;
         let newList: GroceryItem[] = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].id == item.id) {
-                items[i].checked = !items[i].checked;
+                newList.push({...items[i], checked: nextChecked});
+            } else {
+                newList.push(items[i]);
             }
-            newList.push(items[i]);
         }
-        setGroceryItems(newList);
-        const checkedItem: GroceryItem = {
+        setGroceryItems(newList); //replace later with getgroceryitems instead of modifying here
+        const checkedItem: UpdateGroceryItemRequest = {
             id: item.id,
             name: item.name,
-            checked: !item.checked,
+            manualQuantity: null, //sned null when unchanged since this is only for checked item
+            checked: nextChecked,
             category: item.category,
-            subtext: item.subtext
+            unit: item.unit ?? null,
+            note: item.note ?? null
         }
         await updateGroceryItem(checkedItem)
     }
@@ -115,7 +120,7 @@ export default function TabTwoScreen() {
         await getGroceryItems();
     }
 
-    async function getGroceryItems(){
+    async function getGroceryItems() {
         const items = await getGroceries();
         // setGroceryItems(previousItems => [...previousItems, {
         //     name,

@@ -10,11 +10,12 @@ interface GroceryCategoryProps {
     sectionItems: GroceryItem[],
     itemChecked: (item: GroceryItem) => void
 }
+
 //TODO: add amounts to each ingredient/item
 
 export default function GroceryCategory({sectionTitle, sectionItems, itemChecked}: GroceryCategoryProps) {
     const scheme = useColourScheme();
-    const colours = Colours[scheme === 'unspecified' ? 'light' : scheme];
+    const colours = Colours[scheme === 'dark' ? 'dark' : 'light'];
     return <View style={[styles.category, {backgroundColor: colours.backgroundcontainer}]}>
         <View style={styles.heading}>
             <View style={[styles.headingAccent, {backgroundColor: colours.brownhighlight}]}/>
@@ -32,8 +33,9 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
                            {borderTopColor: colours.background}, //always aplpy background colour
                            index > 0 && styles.divider, // add top divider if not first one
                            pressed && styles.pressed]}>
-                <SymbolView name={item.checked ? 'checkmark.circle.fill' : 'circle' /*TODO btw this doesnt work on desktop */}
-                            tintColor={colours.greenhighlight} size={28} style={styles.checkbox}/>
+                <SymbolView
+                    name={item.checked ? 'checkmark.circle.fill' : 'circle' /*TODO btw this doesnt work on desktop */}
+                    tintColor={colours.greenhighlight} size={28} style={styles.checkbox}/>
                 <View style={styles.itemText}>
                     <ThemedText style={[
                         styles.itemName,
