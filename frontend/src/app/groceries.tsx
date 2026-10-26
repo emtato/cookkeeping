@@ -53,6 +53,24 @@ export default function TabTwoScreen() {
     let progress = 0;
     if (items.length > 0) progress = (boughtCount / items.length) * 100;
 
+    function closeAddItem() {
+        setAddIsOpen(false); // add item view doesnt work for desktop: TODO, need hover state (cursor pointer) and add item view itself
+        setNewItemName('');
+        setNewItemCategory('');
+        setNewItemNote('');
+    }
+
+    function updateExistingItem(item: GroceryItem) {
+        setAddIsOpen(true);
+        setNewItemName(item.name)
+        setNewItemCategory(item.category)
+        setNewItemNote(item.note ? item.note : "");
+    }
+
+    //TODO: bug1: the shadow making background darker doesnt appear automatically, also transitions from bottom to top
+    //TODO: bug2: transition is a bit slow and weird make it faster
+
+    /* ——————————————————————————————————————— grocery list modification functions ——————————————————————————————————————————————*/
     // TODO: When editing an item, show two quantity fields: the planned meal amount (read-only)
     // and the user-added amount (editable). The total is their sum, so the user can see why
     // it can't go below the planned amount instead of seeing an unexplained minimum like 415 g.
@@ -83,20 +101,11 @@ export default function TabTwoScreen() {
         await updateGroceryItem(checkedItem)
     }
 
-    function closeAddItem() {
-        setAddIsOpen(false); // add item view doesnt work for desktop: TODO, need hover state (cursor pointer) and add item view itself
-        setNewItemName('');
-        setNewItemCategory('');
-        setNewItemNote('');
-    }
-
-    //TODO: swipe left to delete grocery item (cofnrim)
+    //TODO: swipe left to delete grocery item (need cofnrim)
     async function saveNewItem() {
         const name = newItemName.trim();
         const category = newItemCategory.trim().toLowerCase();
         if (!name || !category) return;
-
-
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
@@ -112,11 +121,14 @@ export default function TabTwoScreen() {
         await getGroceryItems();
     }
 
+    async function updateItem() {
+
+    }
+
     async function deleteItem(selectedItems: GroceryItem[]) {
         const newItems = items.filter(item => !selectedItems.includes(item)); //temp thing, retrieve from db future
         setGroceryItems(newItems);
         await deleteGroceryItem(selectedItems.map(item => item.id))
-        //either again read resopnse to see if successfully deleted and can delete easily from displayed or getgroeryitems from backend completely
         await getGroceryItems();
     }
 
@@ -180,7 +192,7 @@ export default function TabTwoScreen() {
                 {groceryCategories.map((category, index) =>
                     <GroceryCategory key={index} sectionTitle={groceryCategories[index]}
                                      sectionItems={items.filter(item => item.category.charAt(0).toUpperCase() + item.category.slice(1) == groceryCategories[index])}
-                                     itemChecked={groceryItemCheckeded}/>
+                                     itemChecked={groceryItemCheckeded} itemPressed={updateExistingItem}/>
                 )}
             </View>
         </ScrollView>
@@ -278,6 +290,7 @@ const styles = StyleSheet.create({
     },
     header: {
         marginBottom: Spacing.six,
+        marginTop: Spacing.ten
     },
     titleRow: {
         flexDirection: 'row',
