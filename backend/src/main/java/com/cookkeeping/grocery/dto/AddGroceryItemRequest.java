@@ -1,13 +1,13 @@
 package com.cookkeeping.grocery.dto;
+
 import java.time.LocalDate;
 
 /**
  * Created by Emilia on 2026-10-02!
- * Description:
+ * Description: A new grocery item added by the user.
  * ^ • ω • ^
  */
 
-/** A new grocery item added by the user. */
 // add and update are currently assumed to be user added, so a new need has no meal ID:
 // its needMealIDs entry is null when inserted into the DB, but the array still lines up with quantity.
 // needDate is optional when the user adds an item. If they give a date, the homescreen can show

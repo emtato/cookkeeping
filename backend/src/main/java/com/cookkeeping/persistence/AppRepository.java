@@ -58,17 +58,19 @@ public class AppRepository {
     }
 
     public void updateGroceryItem(UpdateGroceryItemRequest request) {
-        // A null manualQuantity means this update only changes the item details (name, category, checked)
+        // A null manualQuantity means this update only changes the item details
         // Leave all three need arrays alone, whether or not a user-generated need exists.
         if (request.manualQuantity() == null) {
             jdbcClient.sql("""
                     UPDATE grocery_items
-                    SET name = :name, category = :category, checked = :checked
+                    SET name = :name, unit = :unit, category = :category, note = :note, checked = :checked
                     WHERE id = :id
                     """)
                     .param("id", request.id())
                     .param("name", request.name())
+                    .param("unit", request.unit())
                     .param("category", request.category())
+                    .param("note", request.note())
                     .param("checked", request.checked())
                     .update();
             return;
@@ -78,12 +80,15 @@ public class AppRepository {
         //attempt to update existing entry (already exists) with needmealID = null
         int updated = jdbcClient.sql("""
                 UPDATE grocery_items
-                SET name = :name, category = :category, checked = :checked, quantity[array_position("needMealIDs", NULL::integer)] = :manualQuantity
+                SET name = :name, unit = :unit, category = :category, note = :note, checked = :checked,
+                    quantity[array_position("needMealIDs", NULL::integer)] = :manualQuantity
                 WHERE id = :id AND array_position("needMealIDs", NULL::integer) IS NOT NULL
                 """)
                 .param("id", request.id())
                 .param("name", request.name())
+                .param("unit", request.unit())
                 .param("category", request.category())
+                .param("note", request.note())
                 .param("checked", request.checked())
                 .param("manualQuantity", request.manualQuantity())
                 .update();
@@ -91,7 +96,7 @@ public class AppRepository {
         if (updated == 0) {
             updated = jdbcClient.sql("""
                     UPDATE grocery_items
-                    SET name = :name, category = :category, checked = :checked,
+                    SET name = :name, unit = :unit, category = :category, note = :note, checked = :checked,
                         quantity = array_append(quantity, :manualQuantity),
                         need_date = array_append(need_date, NULL::date),
                         "needMealIDs" = array_append("needMealIDs", NULL::integer)
@@ -99,7 +104,9 @@ public class AppRepository {
                     """)
                     .param("id", request.id())
                     .param("name", request.name())
+                    .param("unit", request.unit())
                     .param("category", request.category())
+                    .param("note", request.note())
                     .param("checked", request.checked())
                     .param("manualQuantity", request.manualQuantity())
                     .update();

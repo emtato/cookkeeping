@@ -15,5 +15,6 @@ public record UpdateGroceryItemRequest(
         // null means the user did not change the amount
         String unit,
         String category,
+        String note,
         boolean checked) {
 }

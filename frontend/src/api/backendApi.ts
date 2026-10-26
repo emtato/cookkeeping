@@ -19,9 +19,6 @@ export type Meal = {
 };
 
 
-// TODO: user-added grocery needs should send matching quantity, needDate, and needMealIDs arrays.
-// For a user-added need, put null in its needMealIDs position and in its needDate position
-// if no date was entered. When manually updating an item, keep any existing meal IDs.
 // A date the user does provide can be used to show urgency on the homescreen as it gets closer.
 export type AddGroceryItemRequest = {
     name: string;
@@ -36,16 +33,14 @@ export type AddGroceryItemRequest = {
 export type UpdateGroceryItemRequest = {
     id: number;
     name: string;
-    quantity: number; //manual quantity added. quantities required by meals uneditable
+    manualQuantity: number; //manual quantity added. quantities required by meals uneditable
     unit: string; //unit should be changeable, but important: if unit is changed, quantity should be updated to match, not done yet.
     category: string;
-    note: string | null;
+    note: string;
     checked: boolean;
 };
 
 //add more types when more flows are implemented
-
-//should we return something useful like http status? probably (later)
 
 export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void> {
     const response = await fetch(`${backendUrl}/api/groceries/add`, {
@@ -53,14 +48,16 @@ export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void>
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(item),
     });
+    // TODO: Read the HTTP response and handle unsuccessful status codes.
 }
 
-export async function updateGroceryItem(item: GroceryItem): Promise<void> {
+export async function updateGroceryItem(item: UpdateGroceryItemRequest): Promise<void> {
     const response = await fetch(`${backendUrl}/api/groceries/update`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(item),
     })
+    // TODO: Read the HTTP response and handle unsuccessful status codes.
 }
 
 export async function deleteGroceryItem(itemIDs: number[]): Promise<void> {
@@ -69,7 +66,7 @@ export async function deleteGroceryItem(itemIDs: number[]): Promise<void> {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(itemIDs),
     });
-
+    // TODO: Read the HTTP response and handle unsuccessful status codes.
 }
 
 //should be called upon first open grocery / every save/update
@@ -84,5 +81,6 @@ export async function getGroceries(): Promise<GroceryItem[]> {
         method: 'POST',
     });
 
+    // TODO: Check the HTTP response before parsing its JSON body.
     return await response.json();
 }
