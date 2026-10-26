@@ -74,6 +74,15 @@ export async function deleteGroceryItem(itemIDs: string[]): Promise<void> {
 
 //should be called upon first open grocery / every save/update
 export async function getGroceries(): Promise<GroceryItem[]> {
-    const response = await fetch(`${backendUrl}/api/groceries/get`);
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const startDate = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
+    const endDate = nextWeek.getFullYear() + "-" + String(nextWeek.getMonth() + 1).padStart(2, '0') + "-" + String(nextWeek.getDate()).padStart(2, '0');
+
+    const response = await fetch(`${backendUrl}/api/groceries/get?startDate=${startDate}&endDate=${endDate}`, {
+        method: 'POST',
+    });
+
     return await response.json();
 }

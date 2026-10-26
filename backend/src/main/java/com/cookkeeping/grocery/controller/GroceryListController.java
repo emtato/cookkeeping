@@ -3,8 +3,10 @@ package com.cookkeeping.grocery.controller;
 import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
 import com.cookkeeping.grocery.dto.DisplayGroceryItem;
 import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -47,7 +49,9 @@ public class GroceryListController {
     }
 
     @PostMapping("/api/groceries/get")
-    public List<DisplayGroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
+    public List<DisplayGroceryItem> getGroceryItems(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, //convert the input str to localdate
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         System.out.println("get groceries from " + startDate.toString() + " to " + endDate.toString());
         return groceryService.getGroceryItems(startDate, endDate);
     }

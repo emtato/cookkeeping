@@ -94,8 +94,8 @@ export default function TabTwoScreen() {
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
-            quantity: null, // TODO
-            unit: null,  // TODO
+            quantity: [], // TODO
+            unit: "",  // TODO
             category: category,
             note: null,  // TODO
             checked: false,
