@@ -39,7 +39,7 @@ public class GroceryService {
     }
 
     // activated when ingredient is overdue or manually deleted by checking off and delete
-    public void deleteGroceryItem(int id) {
+    public void deleteGroceryItem(int[] id) {
         // later error check if somehow theres a mismatch or sum? delete from ui but its not acc in backend or something edge case
         appRepository.deleteGroceryItem(id);
     }

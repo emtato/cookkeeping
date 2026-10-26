@@ -79,13 +79,13 @@ export default function HomeScreen() {
     const laterMeals = meals.slice(2, 4); //maybe change to include more
 
     const testshoppingList: GroceryItem[] = [
-        {id: '1', name: 'one egg', checked: true, category: 'eggs', subtext: 'dish a, b c'},
-        {id: '2', name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
-        {id: '3', name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
-        {id: '4', name: 'em', checked: true, category: 'emma', subtext: 'ss'},
-        {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
-        {id: '6', name: 'bagle', checked: true, category: 'other food', subtext: 'asdasdv'},
-        {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
+        {id: 1, name: 'one egg', checked: true, category: 'eggs', subtext: 'dish a, b c'},
+        {id: 2, name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
+        {id: 3, name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
+        {id: 4, name: 'em', checked: true, category: 'emma', subtext: 'ss'},
+        {id: 5, name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
+        {id: 6, name: 'bagle', checked: true, category: 'other food', subtext: 'asdasdv'},
+        {id: 7, name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
     //make every item clickable to toggle checked + sync with db
     const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList); //make sure is empty list if no meals
     const remainingItems = items.filter(item => !item.checked);

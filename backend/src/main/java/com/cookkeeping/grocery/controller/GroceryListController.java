@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import com.cookkeeping.grocery.service.GroceryService;
@@ -43,8 +44,8 @@ public class GroceryListController {
     }
 
     @PostMapping("/api/groceries/delete")
-    public void deleteGroceryItem(int id) {
-        System.out.println("delete " + id);
+    public void deleteGroceryItem(@RequestBody int[] id) {
+        System.out.println("delete " + Arrays.toString(id));
         groceryService.deleteGroceryItem(id);
     }
 

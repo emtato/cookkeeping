@@ -6,7 +6,14 @@ import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
 import {useState} from "react";
-import {addGroceryItem, AddGroceryItemRequest, UpdateGroceryItemRequest, deleteGroceryItem, updateGroceryItem} from "@/api/backendApi";
+import {
+    addGroceryItem,
+    AddGroceryItemRequest,
+    UpdateGroceryItemRequest,
+    deleteGroceryItem,
+    updateGroceryItem,
+    getGroceries
+} from "@/api/backendApi";
 import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
 
@@ -18,15 +25,15 @@ export default function TabTwoScreen() {
     const [newItemCategory, setNewItemCategory] = useState('');
     const [newItemNote, setNewItemNote] = useState(''); //unused for now
     const [items, setGroceryItems] = useState<GroceryItem[]>([
-        {id: '1', name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
-        {id: '2', name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
-        {id: '3', name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
-        {id: '3.5', name: 'turnip', checked: false, category: 'eggs', subtext: 'maitytun'},
-        {id: '4', name: 'em', checked: false, category: 'emma', subtext: 'ss'},
-        {id: '5', name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
-        {id: '6', name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
-        {id: '7', name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'},
-        {id: '8', name: 'espurr', checked: false, category: 'are you sure this is edible?', subtext: 'creaturee....'}
+        {id: 1, name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
+        {id: 2, name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
+        {id: 3, name: 'one last egg', checked: false, category: 'eggs', subtext: 'as'},
+        {id: 4, name: 'turnip', checked: false, category: 'eggs', subtext: 'maitytun'},
+        {id: 5, name: 'em', checked: false, category: 'emma', subtext: 'ss'},
+        {id: 6, name: 'ma', checked: false, category: 'emma', subtext: ' adad'},
+        {id: 7, name: 'bagle', checked: false, category: 'other food', subtext: 'asdasdv'},
+        {id: 8, name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'},
+        {id: 9, name: 'espurr', checked: false, category: 'are you sure this is edible?', subtext: 'creaturee....'}
     ]); //change to actual list from backend later
     const categories = new Set<string>(); //find all grocery categories for map later
     for (const item of items) {
@@ -84,13 +91,7 @@ export default function TabTwoScreen() {
         const category = newItemCategory.trim().toLowerCase();
         if (!name || !category) return;
 
-        setGroceryItems(previousItems => [...previousItems, {
-            id: String(Date.now()),
-            name,
-            checked: false,
-            category,
-            subtext: newItemNote.trim()
-        }]);
+
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
@@ -102,15 +103,27 @@ export default function TabTwoScreen() {
             needDate: [] // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
         }
         await addGroceryItem(newItem)
-        //read response?
+        //read response? to insert into the displayed items. or just getgroceryitems and display new list
+        await getGroceryItems();
     }
 
     async function deleteItem(selectedItems: GroceryItem[]) {
         const newItems = items.filter(item => !selectedItems.includes(item)); //temp thing, retrieve from db future
         setGroceryItems(newItems);
         await deleteGroceryItem(selectedItems.map(item => item.id))
+        //either again read resopnse to see if successfully deleted and can delete easily from displayed or getgroeryitems from backend completely
+        await getGroceryItems();
     }
 
+    async function getGroceryItems(){
+        const items = await getGroceries();
+        // setGroceryItems(previousItems => [...previousItems, {
+        //     name,
+        //     checked: false,
+        //     category,
+        //     subtext: newItemNote.trim()
+        // }]);
+    }
 
     //TODO: maybe: divider and below it, next week's list ?
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button

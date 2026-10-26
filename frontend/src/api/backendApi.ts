@@ -63,7 +63,7 @@ export async function updateGroceryItem(item: GroceryItem): Promise<void> {
     })
 }
 
-export async function deleteGroceryItem(itemIDs: string[]): Promise<void> {
+export async function deleteGroceryItem(itemIDs: number[]): Promise<void> {
     const response = await fetch(`${backendUrl}/api/groceries/delete`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

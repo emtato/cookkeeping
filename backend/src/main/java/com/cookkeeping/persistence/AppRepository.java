@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -106,10 +107,10 @@ public class AppRepository {
         // TODO: If updated is still 0, no grocery row had this ID (or it changed during the update). Report that instead of saying nun
     }
 
-    public void deleteGroceryItem(int id) {
+    public void deleteGroceryItem(int[] ids) {
         jdbcClient.sql("""
                 DELETE FROM grocery_items
-                WHERE id = :id;""").param("id", id).update();
+                WHERE id IN (:ids);""").param("ids", Arrays.stream(ids).boxed().toList()).update(); //convert int[] into iterable
     }
 
     public List<DisplayGroceryItem> getGroceryItems(LocalDate startDate, LocalDate endDate) {
