@@ -21,10 +21,15 @@ export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'dark' ? 'dark' : 'light'];
     const [addIsOpen, setAddIsOpen] = useState(false);
-    const [newItemName, setNewItemName] = useState('');
-    const [newItemCategory, setNewItemCategory] = useState('');
-    const [newItemNote, setNewItemNote] = useState(''); //unused for now
+    const [itemName, setitemName] = useState('');
+    const [itemCategory, setitemCategory] = useState('');
+    const [itemNote, setitemNote] = useState(''); //unused for now
+    const [itemId, setitemId] = useState<number | null>(null);
     const [manualQuantity, setManualQuantity] = useState(0);
+    const [unit, setUnit] = useState('');
+    const [checked, setChecked] = useState(false);
+    const [needDate, setNeedDate] = useState<string[]>([]);
+
     const [items, setGroceryItems] = useState<GroceryItem[]>([
         {id: 1, name: 'one egg', checked: false, category: 'eggs', subtext: 'dish a, b c'},
         {id: 2, name: 'another egg', checked: false, category: 'eggs', subtext: 'dish e,a,b'},
@@ -43,7 +48,7 @@ export default function TabTwoScreen() {
         categories.add(displayName);
     }
     const groceryCategories = [...categories];
-    const canSaveItem = newItemName.trim().length > 0 && newItemCategory.trim().length > 0; //check to verifyvalidity of item save attempt
+    const canSaveItem = itemName.trim().length > 0 && itemCategory.trim().length > 0; //check to verifyvalidity of item save attempt
 
     let boughtCount = 0;
     for (let item of items) {
@@ -55,16 +60,17 @@ export default function TabTwoScreen() {
 
     function closeAddItem() {
         setAddIsOpen(false); // add item view doesnt work for desktop: TODO, need hover state (cursor pointer) and add item view itself
-        setNewItemName('');
-        setNewItemCategory('');
-        setNewItemNote('');
+        setitemName('');
+        setitemCategory('');
+        setitemNote('');
     }
 
     function updateExistingItem(item: GroceryItem) {
         setAddIsOpen(true);
-        setNewItemName(item.name)
-        setNewItemCategory(item.category)
-        setNewItemNote(item.note ? item.note : "");
+        setitemName(item.name)
+        setitemCategory(item.category)
+        setitemNote(item.note ? item.note : "");
+        setitemId(item.id);
     }
 
     //TODO: bug1: the shadow making background darker doesnt appear automatically, also transitions from bottom to top
@@ -99,22 +105,23 @@ export default function TabTwoScreen() {
             note: item.note ?? null
         }
         await updateGroceryItem(checkedItem)
+        // setGroceryItems(getgroceryItems())
     }
 
     //TODO: swipe left to delete grocery item (need cofnrim)
     async function saveNewItem() {
-        const name = newItemName.trim();
-        const category = newItemCategory.trim().toLowerCase();
-        if (!name || !category) return;
+        const name = itemName.trim();
+        const category = itemCategory.trim().toLowerCase();
+        if (!name || !category) return; //warn user  (add more mandatory fields maybe)
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
-            quantity: [], // TODO
-            unit: "",  // TODO
+            quantity: [], // TODO wait since this is only manual addition, shouldnt this also be a number, not array?
+            unit: unit,
             category: category,
-            note: null,  // TODO
+            note: itemNote,
             checked: false,
-            needDate: [] // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
+            needDate: needDate // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
         }
         await addGroceryItem(newItem)
         //read response? to insert into the displayed items. or just getgroceryitems and display new list
@@ -122,7 +129,18 @@ export default function TabTwoScreen() {
     }
 
     async function updateItem() {
-
+        const name = itemName.trim();
+        const category = itemCategory.trim().toLowerCase();
+        if (!name || !category) return; //warn user  (add more mandatory fields maybe)
+        const newItem: UpdateGroceryItemRequest = {
+            id: itemId!!, //were sure id exists since this functio is only attainable when exsiting item pressed
+            name: name,
+            manualQuantity: manualQuantity, // TODO: implement frontend typing field for these
+            unit: unit,
+            category: category,
+            note: itemNote,
+            checked: false //no needate since update request only changes manual fields
+        }
     }
 
     async function deleteItem(selectedItems: GroceryItem[]) {
@@ -133,13 +151,8 @@ export default function TabTwoScreen() {
     }
 
     async function getGroceryItems() {
-        const items = await getGroceries();
-        // setGroceryItems(previousItems => [...previousItems, {
-        //     name,
-        //     checked: false,
-        //     category,
-        //     subtext: newItemNote.trim()
-        // }]);
+        const items: GroceryItem[] = await getGroceries();
+        setGroceryItems(items);
     }
 
     //TODO: maybe: divider and below it, next week's list ?
@@ -221,7 +234,7 @@ export default function TabTwoScreen() {
                                     keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                             <View style={styles.field}>
                                 <ThemedText style={styles.fieldLabel}>ITEM NAME</ThemedText>
-                                <TextInput value={newItemName} onChangeText={setNewItemName} placeholder="e.g. egg"
+                                <TextInput value={itemName} onChangeText={setitemName} placeholder="e.g. egg"
                                            placeholderTextColor={colours.textSecondary}
                                            style={[styles.input, {
                                                backgroundColor: colours.backgroundcontainer,
@@ -230,7 +243,7 @@ export default function TabTwoScreen() {
                             </View>
                             <View style={styles.field}>
                                 <ThemedText style={styles.fieldLabel}>CATEGORY</ThemedText>
-                                <TextInput value={newItemCategory} onChangeText={setNewItemCategory}
+                                <TextInput value={itemCategory} onChangeText={setitemCategory}
                                            placeholder="e.g. 🐱🥚ory" placeholderTextColor={colours.textSecondary}
                                            autoCapitalize="words"
                                            style={[styles.input, {
@@ -242,9 +255,9 @@ export default function TabTwoScreen() {
                                                 keyboardShouldPersistTaps="handled"
                                                 contentContainerStyle={styles.categoryChoices}>
                                         {groceryCategories.map(category =>
-                                            <Pressable key={category} onPress={() => setNewItemCategory(category)}
+                                            <Pressable key={category} onPress={() => setitemCategory(category)}
                                                        style={[styles.categoryChoice, {
-                                                           backgroundColor: newItemCategory.toLowerCase() === category.toLowerCase() ?
+                                                           backgroundColor: itemCategory.toLowerCase() === category.toLowerCase() ?
                                                                colours.greenhighlightSecondary : //highlight item on press
                                                                colours.backgroundcontainer
                                                        }]}>
@@ -255,7 +268,7 @@ export default function TabTwoScreen() {
                             </View>
                             <View style={styles.field}>
                                 <ThemedText style={styles.fieldLabel}>NOTE (OPTIONAL)</ThemedText>
-                                <TextInput value={newItemNote} onChangeText={setNewItemNote}
+                                <TextInput value={itemNote} onChangeText={setitemNote}
                                            placeholder="Quantity, recipe, or reminder"
                                            placeholderTextColor={colours.textSecondary}
                                            style={[styles.input, {
@@ -265,7 +278,7 @@ export default function TabTwoScreen() {
                             </View>
                         </ScrollView>
 
-                        <Pressable onPress={saveNewItem} disabled={!canSaveItem}
+                        <Pressable onPress={itemId != null ? updateItem : saveNewItem} disabled={!canSaveItem}
                                    style={({pressed}) => [
                                        styles.saveButton,
                                        {backgroundColor: canSaveItem ? colours.greenhighlight : colours.backgroundcontainer},
