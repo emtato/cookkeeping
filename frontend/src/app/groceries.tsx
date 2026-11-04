@@ -5,7 +5,7 @@ import {BottomTabInset, Colours, Fonts, Spacing} from '@/constants/theme'
 import {useColorScheme as useColourScheme} from 'react-native';
 import GroceryCategory from "@/components/grocery-category";
 import {GroceryItem} from "@/types/groceryItem";
-import {useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {
     addGroceryItem,
     AddGroceryItemRequest,
@@ -41,6 +41,8 @@ export default function TabTwoScreen() {
         {id: 8, name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'},
         {id: 9, name: 'espurr', checked: false, category: 'are you sure this is edible?', subtext: 'creaturee....'}
     ]); //change to actual list from backend later
+
+    /* ———————————————— logic stuff & polling ———————————————————————————*/
     const categories = new Set<string>(); //find all grocery categories for map later
     for (const item of items) {
         const category = item.category.toLowerCase();
@@ -63,17 +65,39 @@ export default function TabTwoScreen() {
         setitemName('');
         setitemCategory('');
         setitemNote('');
+        setitemId(null);
+        setManualQuantity(0);
+        setUnit('');
+        setChecked(false);
+        setNeedDate([]);
     }
 
     function updateExistingItem(item: GroceryItem) {
-        setAddIsOpen(true);
-        setitemName(item.name)
-        setitemCategory(item.category)
-        setitemNote(item.note ? item.note : "");
+        const manualIndex = item.needMealIDs?.findIndex(id => id === null) ?? -1;
+        const manualNeedDate = manualIndex >= 0 ? item.needDate?.[manualIndex] : null;
+
+        setitemName(item.name);
+        setitemCategory(item.category);
+        setitemNote(item.note ?? '');
         setitemId(item.id);
+        setManualQuantity(manualIndex >= 0 ? item.quantity?.[manualIndex] ?? 0 : 0);
+        setUnit(item.unit ?? '');
         setChecked(item.checked);
+        setNeedDate(manualNeedDate != null ? [manualNeedDate] : []);
+        setAddIsOpen(true);
     }
 
+    const getAndSetGroceryItems = useCallback(async () => { //keeps the same function between renders rather than creating a new one each time,
+        // otherwise this dependency in the below use Effect would restart the effect after each fetch updates state.
+        const items: GroceryItem[] = await getGroceries();
+        setGroceryItems(items);
+    }, []);
+
+    useEffect(() => {
+        getAndSetGroceryItems();
+        const timer = setInterval(getAndSetGroceryItems, 30_000);
+        return () => clearInterval(timer);
+    }, [getAndSetGroceryItems]);
     //TODO: bug1: the shadow making background darker doesnt appear automatically, also transitions from bottom to top
     //TODO: bug2: transition is a bit slow and weird make it faster
 
@@ -85,6 +109,8 @@ export default function TabTwoScreen() {
     // TODO: Send UpdateGroceryItemRequest both when the user opens an item, changes its fields,
     // and presses Save, and when they check it off without opening it. For a check, keep the
     // current name, category, and manual quantity and change only checked.
+
+    /* The API functions also still ignore unsuccessful HTTP responses, so the screens cannot tell a rejected save from a successful one*/
     async function groceryItemCheckeded(item: GroceryItem) {
         const nextChecked = !item.checked;
         item.checked = nextChecked;
@@ -93,7 +119,7 @@ export default function TabTwoScreen() {
             id: item.id,
             name: item.name,
             manualQuantity: null, //sned null when unchanged since this is only for checked item
-            checked:  item.checked,
+            checked: item.checked,
             category: item.category,
             unit: item.unit ?? null,
             note: item.note ?? null
@@ -110,7 +136,7 @@ export default function TabTwoScreen() {
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
-            quantity: [], // TODO wait since this is only manual addition, shouldnt this also be a number, not array?
+            quantity: [manualQuantity], //TODO  MANUAL QUANTITY input field, shouldnt this also be a number, not array?
             unit: unit,
             category: category,
             note: itemNote,
@@ -147,10 +173,6 @@ export default function TabTwoScreen() {
         await getAndSetGroceryItems();
     }
 
-    async function getAndSetGroceryItems() {
-        const items: GroceryItem[] = await getGroceries();
-        setGroceryItems(items);
-    }
 
     //TODO: maybe: divider and below it, next week's list ?
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
