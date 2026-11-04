@@ -252,7 +252,7 @@ export default function TabTwoScreen() {
                         <ScrollView style={styles.formScroll} contentContainerStyle={styles.form}
                                     keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                             <View style={styles.field}>
-                                <ThemedText style={styles.fieldLabel}>ITEM NAME</ThemedText>
+                                <ThemedText style={styles.fieldLabel}>item name</ThemedText>
                                 <TextInput value={itemName} onChangeText={setitemName} placeholder="e.g. egg"
                                            placeholderTextColor={colours.textSecondary}
                                            style={[styles.input, {
@@ -261,7 +261,7 @@ export default function TabTwoScreen() {
                                            }]}/>
                             </View>
                             <View style={styles.field}>
-                                <ThemedText style={styles.fieldLabel}>CATEGORY</ThemedText>
+                                <ThemedText style={styles.fieldLabel}>category</ThemedText>
                                 <TextInput value={itemCategory} onChangeText={setitemCategory}
                                            placeholder="e.g. 🐱🥚ory" placeholderTextColor={colours.textSecondary}
                                            autoCapitalize="words"
@@ -285,8 +285,58 @@ export default function TabTwoScreen() {
                                         )}
                                     </ScrollView>}
                             </View>
+                            {/* amount displays*/}
+                            <View style={styles.fieldRow}>
+                                <View style={[styles.field, styles.halfField]}>
+                                    <ThemedText style={styles.fieldLabel}>amount</ThemedText>
+                                    {/* TODO: Connect onChangeText to manual quantity validation and state. */}
+                                    <TextInput defaultValue={String(manualQuantity)}
+                                               inputMode="numeric"
+                                               placeholder="0"
+                                               accessibilityLabel="Manual quantity"
+                                               placeholderTextColor={colours.textSecondary}
+                                               style={[styles.input, {
+                                                   backgroundColor: colours.backgroundcontainer,
+                                                   color: colours.text,
+                                               }]}/>
+                                </View>
+                                <View style={[styles.field, styles.halfField]}>
+                                    <ThemedText style={styles.fieldLabel}>unit</ThemedText>
+                                    {/* TODO: Connect onChangeText to unit state. */}
+                                    <TextInput defaultValue={unit}
+                                               placeholder="g, ml, items"
+                                               autoCapitalize="none"
+                                               accessibilityLabel="Unit"
+                                               placeholderTextColor={colours.textSecondary}
+                                               style={[styles.input, {
+                                                   backgroundColor: colours.backgroundcontainer,
+                                                   color: colours.text,
+                                               }]}/>
+                                </View>
+                            </View>
+                            <View style={styles.fieldRowTwo}>
+                                <View style={[styles.field, styles.halfField]}>
+                                    <ThemedText style={styles.fieldLabel}>amount from meal plan</ThemedText>
+                                    {/* TODO: Display the quantity required by planned meals here. */}
+                                    <View style={[styles.input, styles.readOnlyInput, {
+                                        backgroundColor: colours.background,
+                                    }]}>
+                                        <ThemedText style={{color: colours.textSecondary}}>—</ThemedText>
+                                    </View>
+
+                                </View>
+                                <View style={[styles.field, styles.halfField]}>
+                                    <ThemedText style={styles.fieldLabel}>total quantity (read-only)</ThemedText>
+                                    {/* TODO: Display the planned meal amount plus the manual amount here. */}
+                                    <View style={[styles.input, styles.readOnlyInput, {
+                                        backgroundColor: colours.background,
+                                    }]}>
+                                        <ThemedText style={{color: colours.textSecondary}}>—</ThemedText>
+                                    </View>
+                                </View>
+                            </View>
                             <View style={styles.field}>
-                                <ThemedText style={styles.fieldLabel}>NOTE (OPTIONAL)</ThemedText>
+                                <ThemedText style={styles.fieldLabel}>note (optional)</ThemedText>
                                 <TextInput value={itemNote} onChangeText={setitemNote}
                                            placeholder="Quantity, recipe, or reminder"
                                            placeholderTextColor={colours.textSecondary}
@@ -458,13 +508,38 @@ const styles = StyleSheet.create({
     field: {
         gap: Spacing.two,
     },
+    fieldRow: {
+        flexDirection: 'row',
+        gap: Spacing.three,
+        marginBottom: -Spacing.three,
+    },
+    fieldRowTwo: {
+        marginTop: Spacing.three,
+        flexDirection: 'row',
+        gap: Spacing.three,
+        marginBottom: -Spacing.three,
+    },
+    halfField: {
+        flex: 1, //equal share of space, ratio of 1:1 since each one gets this style
+        flexBasis: 0,
+        minWidth: 0,
+        width: 0,
+    },
+    readOnlyInput: {
+        justifyContent: 'center',
+        marginTop: -Spacing.two,
+    },
     fieldLabel: {
         fontSize: 11,
         lineHeight: 16,
         fontWeight: '700',
         letterSpacing: 0.8,
+        marginLeft: Spacing.two,
+        marginBottom: -Spacing.one,
     },
     input: {
+        width: '100%',
+        minWidth: 0,
         minHeight: 50,
         borderRadius: 14,
         paddingHorizontal: Spacing.four,
