@@ -178,8 +178,10 @@ export default function TabTwoScreen() {
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
 
     return <>
+        {/* Grocery list: header, progress, and categories */}
         <ScrollView style={{backgroundColor: colours.background}} contentContainerStyle={styles.content}>
             <View style={styles.header}>
+                {/* Title and list actions */}
                 <View style={styles.titleRow}>
                     <ThemedText type="title" style={styles.title}>This week</ThemedText>
                     <Pressable onPress={() => { //delete items + only display
@@ -205,6 +207,7 @@ export default function TabTwoScreen() {
                         <ThemedText style={[styles.addButtonText, {color: colours.background}]}>Add item</ThemedText>
                     </Pressable>
                 </View>
+                {/* Bought and remaining counts, followed by the progress bar */}
                 <View style={styles.progress}>
                     <ThemedText style={[styles.remainingText, {color: colours.greenhighlight}]}>
                         {remainingCount === 0 && items.length > 0 ? 'All picked up' : `${remainingCount} left to pick up`}
@@ -220,6 +223,7 @@ export default function TabTwoScreen() {
                     }]}/>
                 </View>
             </View>
+            {/* Grocery items grouped by category */}
             <View style={styles.categories}>
                 {groceryCategories.map((category, index) =>
                     <GroceryCategory key={index} sectionTitle={groceryCategories[index]}
@@ -228,7 +232,7 @@ export default function TabTwoScreen() {
                 )}
             </View>
         </ScrollView>
-        {/* popup*/}
+        {/* Add/edit popup: overlay and sheet */}
         {addIsOpen &&
             <Modal transparent animationType="slide" onRequestClose={closeAddItem}>
                 <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}>
@@ -238,6 +242,7 @@ export default function TabTwoScreen() {
                         borderColor: colours.greenhighlightSecondary,
                     }]}>
                         <View style={[styles.sheetHandle, {backgroundColor: colours.greenhighlightSecondary}]}/>
+                        {/* Popup heading and cancel action */}
                         <View style={styles.popupHeader}>
                             <View style={styles.popupHeading}>
                                 <ThemedText style={styles.popupTitle}>Add an item</ThemedText>
@@ -249,8 +254,10 @@ export default function TabTwoScreen() {
                             </Pressable>
                         </View>
 
+                        {/* Scrollable popup fields */}
                         <ScrollView style={styles.formScroll} contentContainerStyle={styles.form}
                                     keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                            {/* Item name and category */}
                             <View style={styles.field}>
                                 <ThemedText style={styles.fieldLabel}>item name</ThemedText>
                                 <TextInput value={itemName} onChangeText={setitemName} placeholder="e.g. egg"
@@ -285,7 +292,7 @@ export default function TabTwoScreen() {
                                         )}
                                     </ScrollView>}
                             </View>
-                            {/* amount displays*/}
+                            {/* Editable amount and unit */}
                             <View style={styles.fieldRow}>
                                 <View style={[styles.field, styles.halfField]}>
                                     <ThemedText style={styles.fieldLabel}>amount</ThemedText>
@@ -314,6 +321,7 @@ export default function TabTwoScreen() {
                                                }]}/>
                                 </View>
                             </View>
+                            {/* Read-only meal plan amount and total quantity */}
                             <View style={styles.fieldRowTwo}>
                                 <View style={[styles.field, styles.halfField]}>
                                     <ThemedText style={styles.fieldLabel}>amount from meal plan</ThemedText>
@@ -335,6 +343,7 @@ export default function TabTwoScreen() {
                                     </View>
                                 </View>
                             </View>
+                            {/* Optional item note */}
                             <View style={styles.field}>
                                 <ThemedText style={styles.fieldLabel}>note (optional)</ThemedText>
                                 <TextInput value={itemNote} onChangeText={setitemNote}
@@ -347,6 +356,7 @@ export default function TabTwoScreen() {
                             </View>
                         </ScrollView>
 
+                        {/* Save action */}
                         <Pressable onPress={itemId != null ? updateItem : saveNewItem} disabled={!canSaveItem}
                                    style={({pressed}) => [
                                        styles.saveButton,
@@ -364,12 +374,15 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+    // Screen layout
     content: {
         width: '100%',
         paddingHorizontal: Spacing.five,
         paddingTop: Spacing.five,
         paddingBottom: BottomTabInset + Spacing.eight,
     },
+
+    // Header: title and list actions
     header: {
         marginBottom: Spacing.six,
         marginTop: Spacing.ten
@@ -388,14 +401,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         flexShrink: 1,
     },
-    addButton: {
-        width: '30%',
-        minHeight: 44,
-        paddingHorizontal: Spacing.two,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: Spacing.three,
-    },
     deleteButton: {
         width: 44,
         minHeight: 44,
@@ -404,13 +409,23 @@ const styles = StyleSheet.create({
         borderRadius: Spacing.three,
         marginRight: -Spacing.seven,
     },
+    pressed: {
+        opacity: 0.75,
+    },
+    addButton: {
+        width: '30%',
+        minHeight: 44,
+        paddingHorizontal: Spacing.two,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Spacing.three,
+    },
     addButtonText: {
         fontSize: 14,
         fontWeight: '600',
     },
-    pressed: {
-        opacity: 0.75,
-    },
+
+    // Header: grocery progress
     progress: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -437,12 +452,14 @@ const styles = StyleSheet.create({
         height: '100%',
         borderRadius: 4,
     },
+
+    // Grocery categories
     categories: {
         gap: Spacing.three,
         marginTop: -Spacing.two
     },
 
-    //popup thingy
+    // Popup: overlay and sheet
     modalRoot: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -473,6 +490,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: Spacing.five,
     },
+
+    // Popup: heading and cancel action
     popupHeader: {
         flexDirection: 'row',
         alignItems: 'flex-start',
@@ -498,6 +517,8 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontWeight: '600',
     },
+
+    // Popup: form containers and shared fields
     formScroll: {
         flexShrink: 1,
     },
@@ -507,27 +528,6 @@ const styles = StyleSheet.create({
     },
     field: {
         gap: Spacing.two,
-    },
-    fieldRow: {
-        flexDirection: 'row',
-        gap: Spacing.three,
-        marginBottom: -Spacing.three,
-    },
-    fieldRowTwo: {
-        marginTop: Spacing.three,
-        flexDirection: 'row',
-        gap: Spacing.three,
-        marginBottom: -Spacing.three,
-    },
-    halfField: {
-        flex: 1, //equal share of space, ratio of 1:1 since each one gets this style
-        flexBasis: 0,
-        minWidth: 0,
-        width: 0,
-    },
-    readOnlyInput: {
-        justifyContent: 'center',
-        marginTop: -Spacing.two,
     },
     fieldLabel: {
         fontSize: 11,
@@ -545,6 +545,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: Spacing.four,
         fontSize: 16,
     },
+
+    // Popup: category choices
     categoryChoices: {
         gap: Spacing.two,
         paddingTop: Spacing.half,
@@ -560,6 +562,33 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontWeight: '600',
     },
+
+    // Popup: amount and unit row
+    fieldRow: {
+        flexDirection: 'row',
+        gap: Spacing.three,
+        marginBottom: -Spacing.three,
+    },
+    halfField: {
+        flex: 1, //equal share of space, ratio of 1:1 since each one gets this style
+        flexBasis: 0,
+        minWidth: 0,
+        width: 0,
+    },
+
+    // Popup: meal plan amount and total row
+    fieldRowTwo: {
+        marginTop: Spacing.three,
+        flexDirection: 'row',
+        gap: Spacing.three,
+        marginBottom: -Spacing.three,
+    },
+    readOnlyInput: {
+        justifyContent: 'center',
+        marginTop: -Spacing.two,
+    },
+
+    // Popup: save action
     saveButton: {
         minHeight: 52,
         borderRadius: 16,
