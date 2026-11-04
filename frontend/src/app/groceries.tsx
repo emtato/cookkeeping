@@ -27,7 +27,7 @@ export default function TabTwoScreen() {
     const [itemId, setitemId] = useState<number | null>(null);
     const [manualQuantity, setManualQuantity] = useState(0);
     const [unit, setUnit] = useState('');
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(false); //this checked state is not modified during checking, only a flag to store updateItem's checked status
     const [needDate, setNeedDate] = useState<string[]>([]);
 
     const [items, setGroceryItems] = useState<GroceryItem[]>([
@@ -71,6 +71,7 @@ export default function TabTwoScreen() {
         setitemCategory(item.category)
         setitemNote(item.note ? item.note : "");
         setitemId(item.id);
+        setChecked(item.checked);
     }
 
     //TODO: bug1: the shadow making background darker doesnt appear automatically, also transitions from bottom to top
@@ -86,26 +87,19 @@ export default function TabTwoScreen() {
     // current name, category, and manual quantity and change only checked.
     async function groceryItemCheckeded(item: GroceryItem) {
         const nextChecked = !item.checked;
-        let newList: GroceryItem[] = [];
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].id == item.id) {
-                newList.push({...items[i], checked: nextChecked});
-            } else {
-                newList.push(items[i]);
-            }
-        }
-        setGroceryItems(newList); //replace later with getgroceryitems instead of modifying here
+        item.checked = nextChecked;
+
         const checkedItem: UpdateGroceryItemRequest = {
             id: item.id,
             name: item.name,
             manualQuantity: null, //sned null when unchanged since this is only for checked item
-            checked: nextChecked,
+            checked:  item.checked,
             category: item.category,
             unit: item.unit ?? null,
             note: item.note ?? null
         }
         await updateGroceryItem(checkedItem)
-        // setGroceryItems(getgroceryItems())
+        await getAndSetGroceryItems();
     }
 
     //TODO: swipe left to delete grocery item (need cofnrim)
@@ -124,8 +118,8 @@ export default function TabTwoScreen() {
             needDate: needDate // TODO: ecentually decide if adding means also adding date or assuming its for next grocery trip (likely)
         }
         await addGroceryItem(newItem)
-        //read response? to insert into the displayed items. or just getgroceryitems and display new list
-        await getGroceryItems();
+        //read response? to insert into the displayed items. or just getAndSetGroceryItems and display new list
+        await getAndSetGroceryItems();
     }
 
     async function updateItem() {
@@ -139,18 +133,21 @@ export default function TabTwoScreen() {
             unit: unit,
             category: category,
             note: itemNote,
-            checked: false //no needate since update request only changes manual fields
+            checked: checked,
+            //no needate since update request only changes manual fields
         }
+        await updateGroceryItem(newItem);
+        await getAndSetGroceryItems();
     }
 
     async function deleteItem(selectedItems: GroceryItem[]) {
         const newItems = items.filter(item => !selectedItems.includes(item)); //temp thing, retrieve from db future
         setGroceryItems(newItems);
         await deleteGroceryItem(selectedItems.map(item => item.id))
-        await getGroceryItems();
+        await getAndSetGroceryItems();
     }
 
-    async function getGroceryItems() {
+    async function getAndSetGroceryItems() {
         const items: GroceryItem[] = await getGroceries();
         setGroceryItems(items);
     }
