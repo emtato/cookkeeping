@@ -43,6 +43,7 @@ export type UpdateGroceryItemRequest = {
 //add more types when more flows are implemented
 
 export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void> {
+    console.log("Adding grocery item: ", item);
     const response = await fetch(`${backendUrl}/api/groceries/add`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

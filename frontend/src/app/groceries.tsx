@@ -232,13 +232,15 @@ export default function TabTwoScreen() {
             </View>
         </ScrollView>
         {/* popup */}
-        {addIsOpen && <Pressable style={styles.backdrop} onPress={closeAddItem}>
-            {/* make blur an earlier layer before the popup so it doesnt animate alongside*/}
-            <Modal transparent animationType="slide" onRequestClose={closeAddItem}>
+        {addIsOpen && <Modal transparent>
+            <Pressable style={styles.backdrop}/> {/* make darkening another layer before the popup so it doesnt animate alongside*/}
+            <Modal animationType="slide" transparent>
                 <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}>
+                    <Pressable style={StyleSheet.absoluteFill} onPress={closeAddItem}/>
                     <View style={[styles.popup, {
                         backgroundColor: colours.background,
                         borderColor: colours.greenhighlightSecondary,
+                        /*popup sits above the above Pressable and receives taps*/
                     }]}>
                         <View style={[styles.sheetHandle, {backgroundColor: colours.greenhighlightSecondary}]}/>
                         {/* Popup heading and cancel action */}
@@ -297,10 +299,9 @@ export default function TabTwoScreen() {
                                 <View style={[styles.field, styles.halfField]}>
                                     <ThemedText style={styles.fieldLabel}>amount</ThemedText>
                                     {/* TODO: Connect onChangeText to manual quantity validation and state. */}
-                                    <TextInput defaultValue={String(manualQuantity)}
-                                               inputMode="numeric"
-                                               placeholder="0"
-                                               accessibilityLabel="Manual quantity"
+                                    <TextInput value={String(manualQuantity)}
+                                               onChangeText={(text) => setManualQuantity(Number(text)) /* guaranteed number since inputmode numeric*/}
+                                               inputMode="numeric" placeholder="0"
                                                placeholderTextColor={colours.textSecondary}
                                                style={[styles.input, {
                                                    backgroundColor: colours.backgroundcontainer,
@@ -310,7 +311,7 @@ export default function TabTwoScreen() {
                                 <View style={[styles.field, styles.halfField]}>
                                     <ThemedText style={styles.fieldLabel}>unit</ThemedText>
                                     {/* TODO: Connect onChangeText to unit state. */}
-                                    <TextInput defaultValue={unit}
+                                    <TextInput value={unit} onChangeText={setUnit}
                                                placeholder="g, ml, items"
                                                autoCapitalize="none"
                                                accessibilityLabel="Unit"
@@ -369,7 +370,7 @@ export default function TabTwoScreen() {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-        </Pressable>
+        </Modal>
         }
     </>
 
@@ -465,6 +466,7 @@ const styles = StyleSheet.create({
     modalRoot: {
         flex: 1,
         justifyContent: 'flex-end',
+        display: 'flex',
     },
     backdrop: {
         position: 'absolute',
@@ -473,15 +475,15 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.55)',
+        flex: 1,
+        flexDirection: 'column'
     },
     popup: {
         width: '100%',
-        maxHeight: '160%',
+        maxHeight: '85%',
         borderTopLeftRadius: 26,
         borderTopRightRadius: 26,
         borderWidth: 1,
-        paddingBottom: 480,
-        marginBottom: -460,
         paddingHorizontal: Spacing.five,
         paddingTop: Spacing.two,
     },
