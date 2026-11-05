@@ -233,7 +233,8 @@ export default function TabTwoScreen() {
         </ScrollView>
         {/* popup */}
         {addIsOpen && <Modal transparent>
-            <Pressable style={styles.backdrop}/> {/* make darkening another layer before the popup so it doesnt animate alongside*/}
+            <Pressable
+                style={styles.backdrop}/> {/* make darkening another layer before the popup so it doesnt animate alongside*/}
             <Modal animationType="slide" transparent>
                 <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}>
                     <Pressable style={StyleSheet.absoluteFill} onPress={closeAddItem}/>

@@ -15,8 +15,8 @@ public record DisplayGroceryItem(
         String name,
         Integer[] quantity,
         String unit,
-        String category,
         Integer[] needMealIDs,
+        String category,
         String note,
         boolean checked,
         LocalDate[] needDate,
@@ -26,3 +26,4 @@ public record DisplayGroceryItem(
         Integer displayQuantity,
         Integer[] displayNeedMeals) {
 }
+
