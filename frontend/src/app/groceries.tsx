@@ -98,7 +98,6 @@ export default function TabTwoScreen() {
         const timer = setInterval(getAndSetGroceryItems, 30_000);
         return () => clearInterval(timer);
     }, [getAndSetGroceryItems]);
-    //TODO: bug1: the shadow making background darker doesnt appear automatically, also transitions from bottom to top
     //TODO: bug2: transition is a bit slow and weird make it faster
 
     /* ——————————————————————————————————————— grocery list modification functions ——————————————————————————————————————————————*/
@@ -232,11 +231,11 @@ export default function TabTwoScreen() {
                 )}
             </View>
         </ScrollView>
-        {/* Add/edit popup: overlay and sheet */}
-        {addIsOpen &&
+        {/* popup */}
+        {addIsOpen && <Pressable style={styles.backdrop} onPress={closeAddItem}>
+            {/* make blur an earlier layer before the popup so it doesnt animate alongside*/}
             <Modal transparent animationType="slide" onRequestClose={closeAddItem}>
                 <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}>
-                    <Pressable style={styles.backdrop} onPress={closeAddItem}/>
                     <View style={[styles.popup, {
                         backgroundColor: colours.background,
                         borderColor: colours.greenhighlightSecondary,
@@ -287,7 +286,8 @@ export default function TabTwoScreen() {
                                                                colours.greenhighlightSecondary : //highlight item on press
                                                                colours.backgroundcontainer
                                                        }]}>
-                                                <ThemedText style={styles.categoryChoiceText}>{category}</ThemedText>
+                                                <ThemedText
+                                                    style={styles.categoryChoiceText}>{category}</ThemedText>
                                             </Pressable>
                                         )}
                                     </ScrollView>}
@@ -368,7 +368,9 @@ export default function TabTwoScreen() {
                         </Pressable>
                     </View>
                 </KeyboardAvoidingView>
-            </Modal>}
+            </Modal>
+        </Pressable>
+        }
     </>
 
 }
