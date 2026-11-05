@@ -49,7 +49,7 @@ export async function addGroceryItem(item: AddGroceryItemRequest): Promise<void>
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(item),
     });
-    // TODO: Read the HTTP response and handle unsuccessful status codes.
+    // TODO: Check response.ok and throw on failure so the form can stay open for a retry.
 }
 
 export async function updateGroceryItem(item: UpdateGroceryItemRequest): Promise<void> {
@@ -82,6 +82,6 @@ export async function getGroceries(): Promise<GroceryItem[]> {
         method: 'POST',
     });
 
-    // TODO: Check the HTTP response before parsing its JSON body.
+    // TODO: Check response.ok before parsing JSON so an error object never reaches grocery state.
     return await response.json();
 }

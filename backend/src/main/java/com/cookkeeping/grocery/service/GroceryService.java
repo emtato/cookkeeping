@@ -23,6 +23,7 @@ public class GroceryService {
         //safety checks in case frontend error checking fails and uh oh! happens
         if (request.quantity() == null || request.quantity().length == 0)
             throw new IllegalArgumentException("Quantity cannot be empty");
+        // TODO: Reject a null quantity element before the comparison unboxes it.
         if (request.quantity()[0] < 0) throw new IllegalArgumentException("Quantity cannot be negative");
         if (request.name() == null || request.name().isEmpty())
             throw new IllegalArgumentException("name cannot be empty");

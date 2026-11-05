@@ -89,6 +89,7 @@ export default function TabTwoScreen() {
 
     const getAndSetGroceryItems = useCallback(async () => { //keeps the same function between renders rather than creating a new one each time,
         // otherwise this dependency in the below use Effect would restart the effect after each fetch updates state.
+        // TODO: Handle a failed refresh and keep the current grocery list in state.
         const items: GroceryItem[] = await getGroceries();
         setGroceryItems(items);
     }, []);
@@ -132,6 +133,7 @@ export default function TabTwoScreen() {
         const name = itemName.trim();
         const category = itemCategory.trim().toLowerCase();
         if (!name || !category) return; //warn user  (add more mandatory fields maybe)
+        // TODO: Close the form only after the backend confirms the add succeeded.
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
@@ -223,6 +225,7 @@ export default function TabTwoScreen() {
                 </View>
             </View>
             {/* Grocery items grouped by category */}
+            {/* TODO: Normalize category names the same way for headings and filtering so mixed-case items stay visible. */}
             <View style={styles.categories}>
                 {groceryCategories.map((category, index) =>
                     <GroceryCategory key={index} sectionTitle={groceryCategories[index]}
@@ -299,9 +302,9 @@ export default function TabTwoScreen() {
                             <View style={styles.fieldRow}>
                                 <View style={[styles.field, styles.halfField]}>
                                     <ThemedText style={styles.fieldLabel}>amount</ThemedText>
-                                    {/* TODO: Connect onChangeText to manual quantity validation and state. */}
+                                    {/* TODO: Validate the amount as a nonnegative whole number before sending it. The numeric keyboard still allows invalid pasted text. */}
                                     <TextInput value={String(manualQuantity)}
-                                               onChangeText={(text) => setManualQuantity(Number(text)) /* guaranteed number since inputmode numeric*/}
+                                               onChangeText={(text) => setManualQuantity(Number(text))}
                                                inputMode="numeric" placeholder="0"
                                                placeholderTextColor={colours.textSecondary}
                                                style={[styles.input, {
