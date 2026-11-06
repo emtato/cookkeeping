@@ -1,4 +1,15 @@
-import {KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, TextInput, View} from 'react-native';
+import {
+    Animated,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    useWindowDimensions,
+    View
+} from 'react-native';
 
 import {ThemedText} from '@/components/themed-text';
 import {BottomTabInset, Colours, Fonts, Spacing} from '@/constants/theme'
@@ -21,6 +32,10 @@ export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'dark' ? 'dark' : 'light'];
     const [addIsOpen, setAddIsOpen] = useState(false);
+    const [addIsClosing, setAddIsClosing] = useState(false);
+    const [popupProgress] = useState(() => new Animated.Value(0));  //controls darkness and popup height
+    const {height} = useWindowDimensions();
+    const sheetOffset = popupProgress.interpolate({inputRange: [0, 1], outputRange: [height, 0]});
     const [itemName, setitemName] = useState('');
     const [itemCategory, setitemCategory] = useState('');
     const [itemNote, setitemNote] = useState(''); //unused for now
@@ -60,8 +75,17 @@ export default function TabTwoScreen() {
     let progress = 0;
     if (items.length > 0) progress = (boughtCount / items.length) * 100;
 
-    function closeAddItem() {
-        setAddIsOpen(false); // add item view doesnt work for desktop: TODO, need hover state (cursor pointer) and add item view itself
+    function animatePopup(toValue: number) {
+        return Animated.timing(popupProgress, {
+            toValue,
+            duration: 220,
+            useNativeDriver: Platform.OS !== 'web',
+        });
+    }
+
+    function resetAddItem() {
+        setAddIsOpen(false);
+        setAddIsClosing(false);
         setitemName('');
         setitemCategory('');
         setitemNote('');
@@ -70,6 +94,14 @@ export default function TabTwoScreen() {
         setUnit('');
         setChecked(false);
         setNeedDate([]);
+    }
+
+    function closeAddItem() {
+        if (addIsClosing) return;
+        setAddIsClosing(true);
+        animatePopup(0).start(({finished}) => {
+            if (finished) resetAddItem();
+        });
     }
 
     function updateExistingItem(item: GroceryItem) {
@@ -99,7 +131,6 @@ export default function TabTwoScreen() {
         const timer = setInterval(getAndSetGroceryItems, 30_000);
         return () => clearInterval(timer);
     }, [getAndSetGroceryItems]);
-    //TODO: bug2: transition is a bit slow and weird make it faster
 
     /* ——————————————————————————————————————— grocery list modification functions ——————————————————————————————————————————————*/
     // TODO: When editing an item, show two quantity fields: the planned meal amount (read-only)
@@ -130,6 +161,7 @@ export default function TabTwoScreen() {
 
     //TODO: swipe left to delete grocery item (need cofnrim)
     async function saveNewItem() {
+        if (addIsClosing) return;
         const name = itemName.trim();
         const category = itemCategory.trim().toLowerCase();
         if (!name || !category) return; //warn user  (add more mandatory fields maybe)
@@ -235,16 +267,21 @@ export default function TabTwoScreen() {
             </View>
         </ScrollView>
         {/* popup */}
-        {addIsOpen && <Modal transparent>
-            <Pressable
-                style={styles.backdrop}/> {/* make darkening another layer before the popup so it doesnt animate alongside*/}
-            <Modal animationType="slide" transparent>
-                <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}>
+        {addIsOpen && (
+            <Modal transparent onRequestClose={closeAddItem} onShow={() => {
+                if (!addIsClosing) {
+                    const animation = animatePopup(1); //get animationobject
+                    animation.start(); // start aniamtion
+                }
+            }}>
+                <KeyboardAvoidingView behavior="padding" style={styles.modalRoot}
+                                      pointerEvents={addIsClosing ? 'none' : 'auto'}>
+                    <Animated.View style={[styles.backdrop, {opacity: popupProgress}]} pointerEvents="none"/>
                     <Pressable style={StyleSheet.absoluteFill} onPress={closeAddItem}/>
-                    <View style={[styles.popup, {
+                    <Animated.View style={[styles.popup, {
+                        transform: [{translateY: sheetOffset}],
                         backgroundColor: colours.background,
                         borderColor: colours.greenhighlightSecondary,
-                        /*popup sits above the above Pressable and receives taps*/
                     }]}>
                         <View style={[styles.sheetHandle, {backgroundColor: colours.greenhighlightSecondary}]}/>
                         {/* Popup heading and cancel action */}
@@ -371,11 +408,10 @@ export default function TabTwoScreen() {
                                 color: canSaveItem ? colours.background : colours.textSecondary,
                             }]}>Save item</ThemedText>
                         </Pressable>
-                    </View>
+                    </Animated.View>
                 </KeyboardAvoidingView>
             </Modal>
-        </Modal>
-        }
+        )}
     </>
 
 }
