@@ -133,13 +133,7 @@ export default function TabTwoScreen() {
     }, [getAndSetGroceryItems]);
 
     /* ——————————————————————————————————————— grocery list modification functions ——————————————————————————————————————————————*/
-    // TODO: When editing an item, show two quantity fields: the planned meal amount (read-only)
-    // and the user-added amount (editable). The total is their sum, so the user can see why
-    // it can't go below the planned amount instead of seeing an unexplained minimum like 415 g.
     // Flag a negative user-added amount immediately and send only that amount for update.
-    // TODO: Send UpdateGroceryItemRequest both when the user opens an item, changes its fields,
-    // and presses Save, and when they check it off without opening it. For a check, keep the
-    // current name, category, and manual quantity and change only checked.
 
     /* The API functions also still ignore unsuccessful HTTP responses, so the screens cannot tell a rejected save from a successful one*/
     async function groceryItemCheckeded(item: GroceryItem) {
@@ -169,7 +163,7 @@ export default function TabTwoScreen() {
         closeAddItem();
         const newItem: AddGroceryItemRequest = {
             name: name,
-            quantity: [manualQuantity], //TODO  MANUAL QUANTITY input field, shouldnt this also be a number, not array?
+            quantity: [manualQuantity],
             unit: unit,
             category: category,
             note: itemNote,
@@ -188,7 +182,7 @@ export default function TabTwoScreen() {
         const newItem: UpdateGroceryItemRequest = {
             id: itemId!!, //were sure id exists since this functio is only attainable when exsiting item pressed
             name: name,
-            manualQuantity: manualQuantity, // TODO: implement frontend typing field for these
+            manualQuantity: manualQuantity,
             unit: unit,
             category: category,
             note: itemNote,
@@ -526,6 +520,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingHorizontal: Spacing.five,
         paddingTop: Spacing.two,
+        paddingBottom: Spacing.four
     },
     sheetHandle: {
         width: 40,
