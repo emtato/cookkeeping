@@ -7,10 +7,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {ThemedText} from '@/components/themed-text';
 import {BottomTabInset, Colours, Fonts, MaxContentWidth, Spacing} from '@/constants/theme';
 import {useTheme} from '@/hooks/use-theme';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Meal} from "@/types/meal";
 import {GroceryItem} from "@/types/groceryItem";
-import {groceryItemCheckeded} from "./groceries";
+import {getGroceries, setGroceryItemChecked} from "@/api/backendApi";
 
 export default function HomeScreen() {
     const colours = useTheme();
@@ -95,10 +95,20 @@ export default function HomeScreen() {
     const hiddenCount = remainingItems.length - previewItems.length;
     const progress = items.length === 0 ? 0 : (boughtCount / items.length) * 100;
 
-    function selectItem(item: GroceryItem) {
-        item.checked = !item.checked;
-        groceryItemCheckeded(item);
+    async function getAndSetGroceryItems() {
+        const items: GroceryItem[] = await getGroceries();
         setGroceryItems(items);
+    }
+
+    useEffect(() => {
+        getAndSetGroceryItems();
+        const timer = setInterval(getAndSetGroceryItems, 30_000);
+        return () => clearInterval(timer);
+    }, [getAndSetGroceryItems]);
+
+    async function selectItem(item: GroceryItem) {
+        await setGroceryItemChecked(item);
+        await getAndSetGroceryItems();
     }
 
     return (

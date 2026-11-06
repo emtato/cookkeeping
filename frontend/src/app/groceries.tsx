@@ -23,7 +23,7 @@ import {
     UpdateGroceryItemRequest,
     deleteGroceryItem,
     updateGroceryItem,
-    getGroceries
+    getGroceries, setGroceryItemChecked
 } from "@/api/backendApi";
 import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
@@ -137,19 +137,7 @@ export default function TabTwoScreen() {
 
     /* The API functions also still ignore unsuccessful HTTP responses, so the screens cannot tell a rejected save from a successful one*/
     async function groceryItemCheckeded(item: GroceryItem) {
-        const nextChecked = !item.checked;
-        item.checked = nextChecked;
-
-        const checkedItem: UpdateGroceryItemRequest = {
-            id: item.id,
-            name: item.name,
-            manualQuantity: null, //sned null when unchanged since this is only for checked item
-            checked: item.checked,
-            category: item.category,
-            unit: item.unit ?? null,
-            note: item.note ?? null
-        }
-        await updateGroceryItem(checkedItem)
+        await setGroceryItemChecked(item);
         await getAndSetGroceryItems();
     }
 

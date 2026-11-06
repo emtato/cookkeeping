@@ -39,6 +39,7 @@ export type UpdateGroceryItemRequest = {
     note: string | null;
     checked: boolean;
 };
+/* ——————————————————————————————— api call section ———————————————————————————————————————*/
 
 //add more types when more flows are implemented
 
@@ -84,4 +85,23 @@ export async function getGroceries(): Promise<GroceryItem[]> {
 
     // TODO: Check response.ok before parsing JSON so an error object never reaches grocery state.
     return await response.json();
+}
+
+/* ——————————————————————————————— logic before api section ———————————————————————————————————————*/
+
+export async function setGroceryItemChecked(item: GroceryItem) {
+    const nextChecked = !item.checked;
+    item.checked = nextChecked;
+
+    const checkedItem: UpdateGroceryItemRequest = {
+        id: item.id,
+        name: item.name,
+        manualQuantity: null, //sned null when unchanged since this is only for checked item
+        checked: item.checked,
+        category: item.category,
+        unit: item.unit ?? null,
+        note: item.note ?? null
+    }
+    await updateGroceryItem(checkedItem)
+
 }
