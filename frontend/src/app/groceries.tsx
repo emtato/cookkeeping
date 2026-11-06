@@ -194,8 +194,6 @@ export default function TabTwoScreen() {
     }
 
     async function deleteItem(selectedItems: GroceryItem[]) {
-        const newItems = items.filter(item => !selectedItems.includes(item)); //temp thing, retrieve from db future
-        setGroceryItems(newItems);
         await deleteGroceryItem(selectedItems.map(item => item.id))
         await getAndSetGroceryItems();
     }

@@ -10,6 +10,7 @@ import {useTheme} from '@/hooks/use-theme';
 import {useState} from "react";
 import {Meal} from "@/types/meal";
 import {GroceryItem} from "@/types/groceryItem";
+import {groceryItemCheckeded} from "./groceries";
 
 export default function HomeScreen() {
     const colours = useTheme();
@@ -93,6 +94,12 @@ export default function HomeScreen() {
     const previewItems = remainingItems.slice(0, 4);
     const hiddenCount = remainingItems.length - previewItems.length;
     const progress = items.length === 0 ? 0 : (boughtCount / items.length) * 100;
+
+    function selectItem(item: GroceryItem) {
+        item.checked = !item.checked;
+        groceryItemCheckeded(item);
+        setGroceryItems(items);
+    }
 
     return (
         <SafeAreaView edges={['top', 'left', 'right']} style={[styles.screen, {backgroundColor: colours.background}]}>
@@ -180,10 +187,9 @@ export default function HomeScreen() {
                 <View style={styles.section_3}>
                     <ThemedText type="subtitle" style={styles.section_title}>The rest of your week</ThemedText>
 
-                    <Link href="/groceries" asChild>
-                        <Pressable>{({pressed}) => <View style={[styles.overview_card,
-                            {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
-                            <View style={styles.card_heading}>
+                    <View style={[styles.overview_card, {backgroundColor: colours.backgroundcontainer}]}>
+                        <Link href="/groceries" asChild>
+                            <Pressable style={({pressed}) => [styles.card_heading, pressed && styles.pressed]}>
                                 <View style={[styles.preview_icon, {backgroundColor: colours.background}]}>
                                     <SymbolView
                                         name={{ios: 'basket', android: 'shopping_basket', web: 'shopping_basket'}}
@@ -197,50 +203,53 @@ export default function HomeScreen() {
                                 <SymbolView
                                     name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
                                     tintColor={colours.textSecondary} size={18}/>
-                            </View>{/*TODO make each item pressable and update parent for new list*/}
-                            {items.length === 0 ?
-                                <ThemedText themeColour="textSecondary" style={styles.card_description}>
-                                    Nothing on your list yet. Add a few things to get started.
-                                </ThemedText>
-                                : <>{/* list length not 0*/}
-                                    {remainingItems.length > 0 ?
-                                        <View style={styles.grocery_chips}>
-                                            {previewItems.map(item =>
-                                                <View key={item.id} style={[styles.grocery_chip,
-                                                    {backgroundColor: colours.background}]}>
-                                                    <ThemedText numberOfLines={1} style={styles.grocery_chip_text}>
-                                                        {item.name}
-                                                    </ThemedText>
-                                                </View>
-                                            )}
-                                            {hiddenCount > 0 &&
-                                                <View style={[styles.grocery_chip,
-                                                    {backgroundColor: colours.greenhighlightSecondary}]}>
-                                                    <ThemedText style={styles.grocery_chip_text}>
-                                                        +{hiddenCount} more
-                                                    </ThemedText>
-                                                </View>}
-                                        </View>
-                                        : <ThemedText themeColour="textSecondary" style={styles.card_description}>
-                                            Everything on this list is bought.
-                                        </ThemedText>}
-                                    <View style={styles.grocery_progress}>
-                                        <ThemedText themeColour="textSecondary" style={styles.grocery_progress_label}>
-                                            {boughtCount} of {items.length} bought
-                                        </ThemedText>
-                                        <View style={[styles.grocery_progress_track,
-                                            {backgroundColor: colours.background}]}>
-                                            <View style={[styles.grocery_progress_fill,
-                                                {
-                                                    backgroundColor: colours.greenhighlight,
-                                                    width: `${progress}%` as `${number}%`
-                                                }]}/>
-                                        </View>
+                            </Pressable>{/*TODO make each item pressable and update parent for new list*/}
+                        </Link>
+                        {items.length === 0 ?
+                            <ThemedText themeColour="textSecondary" style={styles.card_description}>
+                                Nothing on your list yet. Add a few things to get started.
+                            </ThemedText>
+                            : <>{/* list length not 0*/}
+                                {remainingItems.length > 0 ?
+                                    <View style={styles.grocery_chips}>
+                                        {previewItems.map(item =>
+                                            <Pressable key={item.id} hitSlop={15} onPress={() => selectItem(item)}
+                                                       style={[styles.grocery_chip, {
+                                                           backgroundColor: item.checked ? colours.greenhighlightSecondary :
+                                                               colours.background
+                                                       }]}>
+                                                <ThemedText numberOfLines={1}
+                                                            style={styles.grocery_chip_text}>
+                                                    {item.name}
+                                                </ThemedText>
+                                            </Pressable>
+                                        )}
+                                        {hiddenCount > 0 &&
+                                            <View style={[styles.grocery_chip,
+                                                {backgroundColor: colours.greenhighlightSecondary}]}>
+                                                <ThemedText style={styles.grocery_chip_text}>
+                                                    +{hiddenCount} more
+                                                </ThemedText>
+                                            </View>}
                                     </View>
-                                </>}
-                        </View>}
-                        </Pressable>
-                    </Link>
+                                    : <ThemedText themeColour="textSecondary" style={styles.card_description}>
+                                        Everything on this list is bought.
+                                    </ThemedText>}
+                                <View style={styles.grocery_progress}>
+                                    <ThemedText themeColour="textSecondary" style={styles.grocery_progress_label}>
+                                        {boughtCount} of {items.length} bought
+                                    </ThemedText>
+                                    <View style={[styles.grocery_progress_track,
+                                        {backgroundColor: colours.background}]}>
+                                        <View style={[styles.grocery_progress_fill,
+                                            {
+                                                backgroundColor: colours.greenhighlight,
+                                                width: `${progress}%` as `${number}%`
+                                            }]}/>
+                                    </View>
+                                </View>
+                            </>}
+                    </View>
                     {meals.length > 0 && laterMeals.length === 0 && <Link href="/plan" asChild>
                         <Pressable>{({pressed}) => <View style={[styles.overview_card,
                             {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
