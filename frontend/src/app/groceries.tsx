@@ -27,6 +27,7 @@ import {
 } from "@/api/backendApi";
 import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
+import {useFocusEffect} from "expo-router";
 
 export default function TabTwoScreen() {
     const scheme = useColourScheme();
@@ -126,11 +127,11 @@ export default function TabTwoScreen() {
         setGroceryItems(items);
     }, []);
 
-    useEffect(() => {
+      useFocusEffect(useCallback(() => {
         getAndSetGroceryItems();
         const timer = setInterval(getAndSetGroceryItems, 30_000);
         return () => clearInterval(timer);
-    }, [getAndSetGroceryItems]);
+    }, [getAndSetGroceryItems]));
 
     /* ——————————————————————————————————————— grocery list modification functions ——————————————————————————————————————————————*/
     // Flag a negative user-added amount immediately and send only that amount for update.
@@ -140,7 +141,7 @@ export default function TabTwoScreen() {
         await setGroceryItemChecked(item);
         await getAndSetGroceryItems();
     }
-
+    //TODO: selecting an item in grocery list rearranges order of categories, fix
     //TODO: swipe left to delete grocery item (need cofnrim)
     async function saveNewItem() {
         if (addIsClosing) return;

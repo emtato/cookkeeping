@@ -1,4 +1,4 @@
-import {Link} from 'expo-router';
+import {Link, useFocusEffect} from 'expo-router';
 import {Image} from 'expo-image';
 import {SymbolView} from 'expo-symbols';
 import {Platform, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
@@ -7,7 +7,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {ThemedText} from '@/components/themed-text';
 import {BottomTabInset, Colours, Fonts, MaxContentWidth, Spacing} from '@/constants/theme';
 import {useTheme} from '@/hooks/use-theme';
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Meal} from "@/types/meal";
 import {GroceryItem} from "@/types/groceryItem";
 import {getGroceries, setGroceryItemChecked} from "@/api/backendApi";
@@ -88,7 +88,7 @@ export default function HomeScreen() {
         {id: 6, name: 'bagle', checked: true, category: 'other food', subtext: 'asdasdv'},
         {id: 7, name: 'chip', checked: false, category: 'other food', subtext: 'dfdfdf'}]
     //make every item clickable to toggle checked + sync with db
-    const [items, setGroceryItems] = useState<GroceryItem[]>(testshoppingList); //make sure is empty list if no meals
+    const [items, setGroceryItems] = useState<GroceryItem[]>([]); //make sure is empty list if no meals
     const remainingItems = items.filter(item => !item.checked);
     const boughtCount = items.length - remainingItems.length;
     const previewItems = remainingItems.slice(0, 4);
@@ -100,11 +100,11 @@ export default function HomeScreen() {
         setGroceryItems(items);
     }
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         getAndSetGroceryItems();
         const timer = setInterval(getAndSetGroceryItems, 30_000);
         return () => clearInterval(timer);
-    }, [getAndSetGroceryItems]);
+    }, [getAndSetGroceryItems]));
 
     async function selectItem(item: GroceryItem) {
         await setGroceryItemChecked(item);
@@ -200,19 +200,21 @@ export default function HomeScreen() {
                     <View style={[styles.overview_card, {backgroundColor: colours.backgroundcontainer}]}>
                         <Link href="/groceries" asChild>
                             <Pressable style={({pressed}) => [styles.card_heading, pressed && styles.pressed]}>
-                                <View style={[styles.preview_icon, {backgroundColor: colours.background}]}>
+                                <View style={styles.card_heading}>
+                                    <View style={[styles.preview_icon, {backgroundColor: colours.background}]}>
+                                        <SymbolView
+                                            name={{ios: 'basket', android: 'shopping_basket', web: 'shopping_basket'}}
+                                            tintColor={colours.greenhighlight} size={21}/>
+                                    </View>
+                                    <ThemedText style={styles.card_title}>Groceries</ThemedText>
+                                    {items.length > 0 &&
+                                        <ThemedText themeColour="textSecondary" style={styles.grocery_remaining}>
+                                            {remainingItems.length === 0 ? 'All bought ^w^' : `${remainingItems.length} left`}
+                                        </ThemedText>}
                                     <SymbolView
-                                        name={{ios: 'basket', android: 'shopping_basket', web: 'shopping_basket'}}
-                                        tintColor={colours.greenhighlight} size={21}/>
+                                        name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
+                                        tintColor={colours.textSecondary} size={18}/>
                                 </View>
-                                <ThemedText style={styles.card_title}>Groceries</ThemedText>
-                                {items.length > 0 &&
-                                    <ThemedText themeColour="textSecondary" style={styles.grocery_remaining}>
-                                        {remainingItems.length === 0 ? 'All bought ^w^' : `${remainingItems.length} left`}
-                                    </ThemedText>}
-                                <SymbolView
-                                    name={{ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right'}}
-                                    tintColor={colours.textSecondary} size={18}/>
                             </Pressable>{/*TODO make each item pressable and update parent for new list*/}
                         </Link>
                         {items.length === 0 ?
