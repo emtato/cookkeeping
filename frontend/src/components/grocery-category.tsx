@@ -38,7 +38,8 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
                     event.stopPropagation();
                     itemChecked(item);
                 }}>
-                    <SymbolView name={item.checked ? 'checkmark.circle.fill' : 'circle'}
+                    <SymbolView name={{ios: item.checked ? 'checkmark.circle.fill' : 'circle',
+                                    web: item.checked ? 'check_circle' : 'radio_button_unchecked'}}
                                 tintColor={colours.greenhighlight} size={28} style={styles.checkbox}/>
                 </Pressable>
                 <View style={styles.itemText}>
