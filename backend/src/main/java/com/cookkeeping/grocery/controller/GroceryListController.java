@@ -4,10 +4,7 @@ import com.cookkeeping.grocery.dto.AddGroceryItemRequest;
 import com.cookkeeping.grocery.dto.DisplayGroceryItem;
 import com.cookkeeping.grocery.dto.UpdateGroceryItemRequest;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -23,6 +20,7 @@ import com.cookkeeping.grocery.service.GroceryService;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8081")
 public class GroceryListController {
 
     private final GroceryService groceryService;
