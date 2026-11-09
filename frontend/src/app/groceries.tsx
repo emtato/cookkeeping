@@ -141,8 +141,9 @@ export default function TabTwoScreen() {
         await setGroceryItemChecked(item);
         await getAndSetGroceryItems();
     }
-    //TODO: selecting an item in grocery list rearranges order of categories, fix
     //TODO: swipe left to delete grocery item (need cofnrim)
+    //add delete item within popup
+    //potential bug where ordering by id isnt 100% stable for categories after deletion
     async function saveNewItem() {
         if (addIsClosing) return;
         const name = itemName.trim();

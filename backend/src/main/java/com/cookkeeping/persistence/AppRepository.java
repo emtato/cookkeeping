@@ -157,6 +157,7 @@ public class AppRepository {
                             FROM unnest(need_date) AS dates(needed_day)/* unnest takes all elements in need_date column and makes them individual rows, gives temp table name "dates" and "needed_day" column name */
                             WHERE (needed_day IS NULL) /* PATH 1: user gen item, accept. right now this accepts all checked items. eventually those need to be auto deleted after some time */
                                OR needed_day BETWEEN :startDate AND :endDate) /* PATH 2: grocery items with due date */
+                               ORDER BY grocery_items.id /*order by id so it isnt changed when selecting and stuff*/
                         """)
                 .param("startDate", startDate).param("endDate", endDate)
                 .query().listOfRows();

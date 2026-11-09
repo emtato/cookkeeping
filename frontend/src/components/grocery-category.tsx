@@ -34,7 +34,7 @@ export default function GroceryCategory({sectionTitle, sectionItems, itemChecked
                            {borderTopColor: colours.background}, //always aplpy background colour
                            index > 0 && styles.divider, // add top divider if not first one
                            pressed && styles.pressed]}>
-                <Pressable hitSlop={15} onPress={(event) => {
+                <Pressable hitSlop={25} onPress={(event) => {
                     event.stopPropagation();
                     itemChecked(item);
                 }}>
