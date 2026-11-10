@@ -1,4 +1,5 @@
 import {
+    Alert,
     Animated,
     KeyboardAvoidingView,
     Modal,
@@ -25,7 +26,6 @@ import {
     updateGroceryItem,
     getGroceries, setGroceryItemChecked
 } from "@/api/backendApi";
-import {Alert} from 'react-native';
 import {SymbolView} from 'expo-symbols';
 import {useFocusEffect} from "expo-router";
 
@@ -33,6 +33,7 @@ export default function TabTwoScreen() {
     const scheme = useColourScheme();
     const colours = Colours[scheme === 'dark' ? 'dark' : 'light'];
     const [addIsOpen, setAddIsOpen] = useState(false);
+    const [pendingDelete, setPendingDelete] = useState<GroceryItem[] | null>(null);
     const [addIsClosing, setAddIsClosing] = useState(false);
     const [popupProgress] = useState(() => new Animated.Value(0));  //controls darkness and popup height
     const {height} = useWindowDimensions();
@@ -127,7 +128,7 @@ export default function TabTwoScreen() {
         setGroceryItems(items);
     }, []);
 
-      useFocusEffect(useCallback(() => {
+    useFocusEffect(useCallback(() => {
         getAndSetGroceryItems();
         const timer = setInterval(getAndSetGroceryItems, 30_000);
         return () => clearInterval(timer);
@@ -141,6 +142,7 @@ export default function TabTwoScreen() {
         await setGroceryItemChecked(item);
         await getAndSetGroceryItems();
     }
+
     //TODO: swipe left to delete grocery item (need cofnrim)
     //add delete item within popup
     //potential bug where ordering by id isnt 100% stable for categories after deletion
@@ -188,6 +190,24 @@ export default function TabTwoScreen() {
         await getAndSetGroceryItems();
     }
 
+    function requestDelete() {
+        const checkedItems = items.filter(item => item.checked);
+        if (Platform.OS == 'web') {
+            setPendingDelete(checkedItems);
+            return;
+        }
+
+        if (checkedItems.length == 0) {
+            Alert.alert('No items selected', 'Select items to delete.', [{text: 'Okay :>'}]);
+            return;
+        }
+
+        Alert.alert(checkedItems.length === 1 ? 'Delete item?' : 'Delete items?', 'This cannot be undone.', [
+            {text: 'nononono', style: 'cancel'},
+            {text: 'byebye!', style: 'destructive', onPress: () => void deleteItem(checkedItems)},
+        ]);
+    }
+
 
     //TODO: maybe: divider and below it, next week's list ?
     //TODO: items marked as checked are cleared after 1 hour or manually press "clear all bought" button
@@ -199,28 +219,19 @@ export default function TabTwoScreen() {
                 {/* Title and list actions */}
                 <View style={styles.titleRow}>
                     <ThemedText type="title" style={styles.title}>This week</ThemedText>
-                    <Pressable onPress={() => { //delete items + only display
-                        const checkedItems = items.filter(item => item.checked);
-                        if (checkedItems.length > 0) {
-                            Alert.alert(checkedItems.length > 1 ? 'Delete items?' : 'Delete item?', 'This cannot be undone.', [
-                                {text: 'nononono', style: 'cancel'},
-                                {text: 'byebye!', style: 'destructive', onPress: () => deleteItem(checkedItems)}
-                            ])
-                        } else {
-                            Alert.alert('No items selected', 'Select items to delete.', [
-                                {text: 'Okay :>', style: 'cancel'}
-                            ])
-                        }
-                    }} style={({pressed}) => [
-                        styles.deleteButton, {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}
-                               accessibilityRole="button" accessibilityLabel="Delete checked items">
-                        <SymbolView name="trash" tintColor={'#aa4444'} size={22}/>
-                    </Pressable>
-                    <Pressable onPress={() => setAddIsOpen(true)}
-                               style={({pressed}) => [
-                                   styles.addButton, {backgroundColor: colours.greenhighlight}, pressed && styles.pressed]}>
-                        <ThemedText style={[styles.addButtonText, {color: colours.background}]}>Add item</ThemedText>
-                    </Pressable>
+                    <View style={styles.titleButtons}>
+                        <Pressable onPress={requestDelete}
+                                   style={({pressed}) => [
+                                       styles.deleteButton, {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
+                            <SymbolView name={{ios: "trash", web: "delete_outline"}} tintColor={'#aa4444'} size={22}/>
+                        </Pressable>
+                        <Pressable onPress={() => setAddIsOpen(true)}
+                                   style={({pressed}) => [
+                                       styles.addButton, {backgroundColor: colours.greenhighlight}, pressed && styles.pressed]}>
+                            <ThemedText style={[styles.addButtonText, {color: colours.background}]}>Add
+                                item</ThemedText>
+                        </Pressable>
+                    </View>
                 </View>
                 {/* Bought and remaining counts, followed by the progress bar */}
                 <View style={styles.progress}>
@@ -248,6 +259,41 @@ export default function TabTwoScreen() {
                 )}
             </View>
         </ScrollView>
+
+        {pendingDelete !== null && /* custom web delete confirmation popup*/
+            <Modal transparent animationType="fade" onRequestClose={() => setPendingDelete(null)}>
+                <View style={styles.confirmRoot}>
+                    <Pressable style={styles.backdrop} onPress={() => setPendingDelete(null)}/>
+                    <View style={[styles.confirmCard, {backgroundColor: colours.background}]}>
+                        <ThemedText style={styles.popupTitle}>
+                            {pendingDelete.length == 0 ? 'No items selected' : pendingDelete.length == 1 ? 'Delete item?' : 'Delete items?'}
+                        </ThemedText>
+                        <ThemedText themeColour="textSecondary">
+                            {pendingDelete.length == 0 ? 'Select items to delete.' : 'This cannot be undone.'}
+                        </ThemedText>
+                        <View style={styles.confirmActions}>
+                            <Pressable onPress={() => setPendingDelete(null)} //dont delete
+                                       style={({pressed}) => [styles.confirmButton,
+                                           {backgroundColor: colours.backgroundcontainer}, pressed && styles.pressed]}>
+                                <ThemedText style={styles.cancelText}>
+                                    {pendingDelete.length === 0 ? 'Okay :>' : 'nononono'}
+                                </ThemedText>
+                            </Pressable>
+                            {pendingDelete.length > 0 && (
+                                <Pressable onPress={() => { //deleet
+                                               setPendingDelete(null);
+                                               void deleteItem(pendingDelete);
+                                           }}
+                                           style={({pressed}) => [styles.confirmButton,
+                                               {backgroundColor: '#aa4444'}, pressed && styles.pressed]}>
+                                    <ThemedText style={[styles.cancelText, {color: '#fff'}]}>byebye!</ThemedText>
+                                </Pressable>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        }
         {/* popup */}
         {addIsOpen && (
             <Modal transparent onRequestClose={closeAddItem} onShow={() => {
@@ -426,19 +472,23 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         flexShrink: 1,
     },
+    titleButtons: {
+        flexDirection: 'row',
+        gap: Spacing.four,
+        width: "auto"
+    },
     deleteButton: {
         width: 44,
         minHeight: 44,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: Spacing.three,
-        marginRight: -Spacing.seven,
+        borderRadius: Spacing.three
     },
     pressed: {
         opacity: 0.75,
     },
     addButton: {
-        width: '30%',
+        width: 115,
         minHeight: 44,
         paddingHorizontal: Spacing.two,
         alignItems: 'center',
@@ -485,6 +535,32 @@ const styles = StyleSheet.create({
     },
 
     // Popup: overlay and sheet
+    confirmRoot: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: Spacing.five,
+    },
+    confirmCard: {
+        width: '100%',
+        maxWidth: 420,
+        borderRadius: 26,
+        padding: Spacing.five,
+        gap: Spacing.two,
+    },
+    confirmActions: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end',
+        gap: Spacing.two,
+        marginTop: Spacing.three,
+    },
+    confirmButton: {
+        minHeight: 44,
+        justifyContent: 'center',
+        paddingHorizontal: Spacing.four,
+        borderRadius: Spacing.three,
+    },
     modalRoot: {
         flex: 1,
         justifyContent: 'flex-end',
